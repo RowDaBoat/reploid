@@ -12,13 +12,14 @@ bin           = @["inim"]
 # Dependencies
 
 requires "cligen >= 1.5.22"
-
 requires "noise >= 0.1.4"
+requires "https://github.com/beef331/nimscripter.git"
 
 task test, "Run all tests":
   exec "mkdir -p bin"
   exec "nim c -d:NoColor -d:prompt_no_history --out:bin/inim inim.nim"
   exec "nim c -r -d:prompt_no_history tests/test.nim"
+  exec "nim c -r -d:prompt_no_history tests/test_nims_backend.nim"
   # Recompile with tty checks
   exec "nim c -d:NoColor -d:NOTTYCHECK -d:prompt_no_history --out:bin/inim inim.nim"
   exec "nim c -r -d:withTools -d:prompt_no_history tests/test_commands.nim"

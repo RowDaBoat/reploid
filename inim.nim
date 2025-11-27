@@ -3,6 +3,8 @@
 
 import os, osproc, strformat, strutils, terminal, sequtils, times, parsecfg, sugar
 import noise
+import inimpkg/nimsBackend
+import options
 
 # Lists available builtin commands
 var commands*: seq[string] = @[]
@@ -21,6 +23,7 @@ type App = ref object
   editor: string
   prompt: string
   withTools: bool
+  nimsBackend: Option[NimsBackend]
 
 var
   app: App
@@ -74,13 +77,16 @@ let
   tmpHistory = getTempDir() / "inim_history_" & $uniquePrefix & ".nim"
 
 proc compileCode(): auto =
-  # PENDING https://github.com/nim-lang/Nim/issues/8312,
-  # remove redundant `--hint[source]=off`
-  let compileCmd = [
-      app.nim, "compile", "--run", "--verbosity=0", app.flags,
-      "--hints=off", "--path=./", "--passL:-w", bufferSource
-  ].join(" ")
-  result = execCmdEx(compileCmd)
+  if app.nimsBackend.isSome:
+    result = app.nimsBackend.get.runCode(bufferSource)
+  else:
+    # PENDING https://github.com/nim-lang/Nim/issues/8312,
+    # remove redundant `--hint[source]=off`
+    let compileCmd = [
+        app.nim, "compile", "--run", "--verbosity=0", app.flags,
+        "--hints=off", "--path=./", "--passL:-w", bufferSource
+    ].join(" ")
+    result = execCmdEx(compileCmd)
 
 proc getPromptSymbol(): Styler
 
@@ -141,7 +147,11 @@ proc welcomeScreen() =
 proc cleanExit(exitCode = 0) =
   buffer.close()
   removeFile(bufferSource) # Temp .nim
-  removeFile(bufferSource[0..^5]) # Temp binary, same filename without ".nim"
+
+  let binaryPath = bufferSource[0..^5]
+  if fileExists(binaryPath):
+    removeFile(binaryPath)
+
   removeFile(tmpHistory)
   removeDir(getTempDir() / "nimcache")
   config.writeConfig(app.rcFile)
@@ -337,7 +347,13 @@ proc doRepl() =
   # Read line
   if indentLevel > 0:
     noiser.preloadBuffer(indentSpaces.repeat(indentLevel))
-  let ok = noiser.readLine()
+  var ok = false
+  try:
+    ok = noiser.readLine()
+  except EOFError:
+    # Handle EOF when stdin is closed (e.g., when piping input)
+    cleanExit()
+    return
   if not ok:
     case noiser.getKeyType():
     of ktCtrlC:
@@ -487,7 +503,7 @@ call(cmd) - Execute command cmd in current shell
   # Clean up
   tempIndentCode = ""
 
-proc initApp*(nim, srcFile: string, showHeader: bool, flags = "",
+proc initApp*(nim, srcFile: string, showHeader: bool, nimsBackend: bool = false, flags = "",
     rcFilePath = RcFilePath, showColor = true, noAutoIndent = false) =
   ## Initialize the ``app` variable.
   app = App(
@@ -498,7 +514,8 @@ proc initApp*(nim, srcFile: string, showHeader: bool, flags = "",
       rcFile: rcFilePath,
       showColor: showColor,
       noAutoIndent: noAutoIndent,
-      withTools: false
+      withTools: false,
+      nimsBackend: if nimsBackend: some(NimsBackend()) else: none(NimsBackend)
   )
 
 
@@ -545,10 +562,9 @@ proc main(nim = "nim", srcFile = "", showHeader = true,
           flags: seq[string] = @[], createRcFile = false,
           rcFilePath: string = RcFilePath, showTypes: bool = false,
           showColor: bool = true, noAutoIndent: bool = false,
-          withTools: bool = false) =
+          withTools: bool = false, useNims: bool = false) =
   ## inim interpreter
-
-  initApp(nim, srcFile, showHeader)
+  initApp(nim, srcFile, showHeader, useNims)
 
   if flags.len > 0:
     app.flags = flags.map(f => (
@@ -632,5 +648,6 @@ when isMainModule:
           "showTypes": "Show var types when printing var without echo",
           "showColor": "Color displayed text",
           "noAutoIndent": "Disable automatic indentation",
-          "withTools": "Load handy tools"
+          "withTools": "Load handy tools",
+          "useNims": "Use nims backend"
     })

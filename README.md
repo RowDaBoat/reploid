@@ -22,6 +22,7 @@ nimble install inim
 * When piped a file or some code, INim will execute that code and exit
 * Extra compiler options can be specified by adding them as arguments inim with the -d flag (ie `inim -d:ssl -d:DEBUG`)
 * Flags can turned on with `-d` by adding a `--` prefix to arguments (ie -d:--threads:on)
+* Use [`nimscripter`](https://github.com/beef331/nimscripter) as backend instead of `nim c` with `--useNims`, compile with `-d:release` for faster execution
 
 ## Configuration
 

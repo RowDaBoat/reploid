@@ -3,6 +3,8 @@
 
 import os, osproc, strutils, terminal, sequtils,
        times, strformat, parsecfg, hotcodereloading
+import nimsBackend
+import options
 #import noise
 from sequtils import filterIt
 
@@ -23,6 +25,7 @@ type App* = ref object
   editor*: string
   prompt*: string
   withTools*: bool
+  nimsBackend*: Option[NimsBackend]
 
 proc `$`*(a: App): string =
   return "App " & a.srcFile & " " & a.nim
@@ -52,13 +55,16 @@ let
   tmpHistory* = getTempDir() & "inim_history_" & $uniquePrefix & ".nim"
 
 proc compileCode(): auto =
-  # PENDING https://github.com/nim-lang/Nim/issues/8312,
-  # remove redundant `--hint[source]=off`
-  let compileCmd = [
-      app.nim, "compile", "--run", "--verbosity=0", app.flags,
-      "--hints=off", "--path=./", bufferSource
-  ].join(" ")
-  result = execCmdEx(compileCmd)
+  if app.nimsBackend.isSome:
+    result = app.nimsBackend.get.runCode(bufferSource)
+  else:
+    # PENDING https://github.com/nim-lang/Nim/issues/8312,
+    # remove redundant `--hint[source]=off`
+    let compileCmd = [
+        app.nim, "compile", "--run", "--verbosity=0", app.flags,
+        "--hints=off", "--path=./", "--passL:-w", bufferSource
+    ].join(" ")
+    result = execCmdEx(compileCmd)
 
 #proc getPromptSymbol*(): Styler
 
@@ -313,7 +319,7 @@ proc hasIndentTrigger*(line: string): bool =
       result = true
 
 
-proc initApp*(nim, srcFile: string, showHeader: bool, flags = "",
+proc initApp*(nim, srcFile: string, showHeader: bool, nimsBackend: bool = false, flags = "",
     rcFilePath = RcFilePath, showColor = true, noAutoIndent = false): App =
   ## Initialize the ``app` variable.
   App(
@@ -324,7 +330,8 @@ proc initApp*(nim, srcFile: string, showHeader: bool, flags = "",
       rcFile: rcFilePath,
       showColor: showColor,
       noAutoIndent: noAutoIndent,
-      withTools: false
+      withTools: false,
+      nimsBackend: if nimsBackend: some(NimsBackend()) else: none(NimsBackend)
   )
 
 
