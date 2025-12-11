@@ -3,6 +3,7 @@
 
 import terminal
 import options
+import noise/styler
 
 
 type
@@ -12,13 +13,13 @@ type
 
 
 type Output* = object
-  nim: ColorScheme
-  promptMessage: ColorScheme
-  promptSymbol: ColorScheme
-  okResult: ColorScheme
-  info: ColorScheme
-  warning: ColorScheme
-  error: ColorScheme
+  nim*: ColorScheme
+  promptMessage*: ColorScheme
+  promptSymbol*: ColorScheme
+  okResult*: ColorScheme
+  info*: ColorScheme
+  warning*: ColorScheme
+  error*: ColorScheme
 
 
 proc colorScheme*(
@@ -97,3 +98,31 @@ proc warning*(self: Output, message: string, newline = true) =
 
 proc error*(self: Output, message: string, newline = true) =
   self.write(message, self.error, newline)
+
+
+proc styledPrompt*(self: Output, message: string, symbol: string): Styler =
+  var styler = Styler.init()
+  var messageFg = self.promptMessage.fg
+  var messageBg = self.promptMessage.bg
+  var symbolFg = self.promptSymbol.fg
+  var symbolBg = self.promptSymbol.bg
+
+  if messageFg.isSome:
+    styler.addCmd(messageFg.get[0])
+
+  if messageBg.isSome:
+    styler.addCmd(messageBg.get[0])
+
+  styler.addCmd(message)
+  styler.addCmd(TerminalCmd.resetStyle)
+
+  if symbolFg.isSome:
+    styler.addCmd(symbolFg.get[0])
+
+  if symbolBg.isSome:
+    styler.addCmd(symbolBg.get[0])
+
+  styler.addCmd(symbol)
+  styler.addCmd(TerminalCmd.resetStyle)
+
+  return styler

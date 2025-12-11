@@ -4,25 +4,17 @@
 import output
 import welcome
 import reader
+import evaluator
 
 
 if isMainModule:
   let output = newOutput()
   output.welcome("nim")
 
-  var reader = newReader("reploid> ")
+  var reader = newReader(output)
+  var evaluator = newEvaluator(output)
+  var finished = false
 
-  while true:
-    let result = reader.read()
-    case result.kind:
-    of Lines:
-      if result.lines != "":
-        echo result.lines
-    of Reset:
-      discard
-    of Quit:
-      break
-    of Editor:
-      discard
-    of EOF:
-      break
+  while not finished:
+    let input = reader.read()
+    finished = evaluator.eval(input)

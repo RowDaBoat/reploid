@@ -3,29 +3,16 @@
 
 import noise
 import strutils
+import input
+import output
 
 
 type Reader* = object
   noise: Noise
-  prompt: string
+  output: Output
+  promptMessage: string
+  promptSymbol: string
   indentation: string
-
-
-type ReadResultKind* = enum Lines, Reset, Quit, Editor, EOF
-
-
-type ReadResult* = object
-    case kind*: ReadResultKind
-    of Lines:
-      lines*: string
-    of Reset:
-      discard
-    of Quit:
-      discard
-    of Editor:
-      discard
-    of EOF:
-      discard
 
 
 const IndentTriggers* = [
@@ -36,12 +23,14 @@ const IndentTriggers* = [
 
 
 proc setMainPrompt*(self: var Reader) =
-  self.noise.setPrompt(Styler.init(self.prompt))
+  let prompt = self.output.styledPrompt(self.promptMessage, self.promptSymbol & " ")
+  self.noise.setPrompt(prompt)
 
 
 proc setMultilinePrompt*(self: var Reader) =
-  let prompt = ".".repeat(self.prompt.len - 1) & " "
-  self.noise.setPrompt(Styler.init(prompt))
+  let promptMessage = ".".repeat(self.promptMessage.len + self.promptSymbol.len - 1)
+  let prompt = self.output.styledPrompt(promptMessage, ". ")
+  self.noise.setPrompt(prompt)
 
 
 proc setIndentation*(self: var Reader, indentationLevels: int) =
@@ -61,36 +50,43 @@ proc unindent*(indentation: int, line: string): bool =
   indentation > 0 and line.strip.len == 0
 
 
-proc newReader*(prompt: string = "reploid> ", indentation: string = "  "): Reader =
+proc newReader*(
+  output: Output,
+  promptMessage: string = "reploid",
+  promptSymbol: string = ">",
+  indentation: string = "  "
+): Reader =
   Reader(
     noise: Noise.init(),
-    prompt: prompt,
+    output: output,
+    promptMessage: promptMessage,
+    promptSymbol: promptSymbol,
     indentation: indentation
   )
 
 
-proc readSingleLine(self: var Reader): ReadResult =
+proc readSingleLine(self: var Reader): Input =
   var ok = false
 
   try:
     ok = self.noise.readLine()
   except EOFError:
-    return ReadResult(kind: EOF)
+    return Input(kind: EOF)
 
   if not ok:
     case self.noise.getKeyType():
     of ktCtrlC:
-      return ReadResult(kind: Reset)
+      return Input(kind: Reset)
     of ktCtrlD:
-      return ReadResult(kind: Quit)
+      return Input(kind: Quit)
     of ktCtrlX:
-      return ReadResult(kind: Editor)
+      return Input(kind: Editor)
     else:
-      return ReadResult(kind: Lines, lines: "")
+      return Input(kind: Lines, lines: "")
 
-  return ReadResult(kind: Lines, lines: self.noise.getLine())
+  return Input(kind: Lines, lines: self.noise.getLine())
 
-proc read*(self: var Reader): ReadResult =
+proc read*(self: var Reader): Input =
   var complete = false
   var indentation = 0
   var lines: seq[string] = @[]
@@ -118,4 +114,4 @@ proc read*(self: var Reader): ReadResult =
     self.setIndentation(indentation)
     complete = indentation == 0
 
-  result = ReadResult(kind: Lines, lines: lines.join("\n"))
+  result = Input(kind: Lines, lines: lines.join("\n"))
