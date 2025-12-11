@@ -1,3 +1,6 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+
 import compiler
 import vm
 
