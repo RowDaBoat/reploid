@@ -100,6 +100,10 @@ proc error*(self: Output, message: string, newline = true) =
   self.write(message, self.error, newline)
 
 
+proc unstyled*(self: Output, message: string, newline = true) =
+  self.write(message, colorScheme(), newline)
+
+
 proc styledPrompt*(self: Output, message: string, symbol: string): Styler =
   var styler = Styler.init()
   var messageFg = self.promptMessage.fg

@@ -5,16 +5,19 @@ import output
 import welcome
 import reader
 import evaluator
-
+import printer
+import evaluation
 
 if isMainModule:
   let output = newOutput()
   output.welcome("nim")
 
   var reader = newReader(output)
-  var evaluator = newEvaluator(output)
-  var finished = false
+  var evaluator = newEvaluator()
+  var printer = newPrinter(output)
+  var evaluation = Evaluation()
 
-  while not finished:
+  while evaluation.kind != Quit:
     let input = reader.read()
-    finished = evaluator.eval(input)
+    evaluation = evaluator.eval(input)
+    printer.print(evaluation)

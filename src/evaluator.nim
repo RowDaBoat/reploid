@@ -2,32 +2,35 @@
 # Copyright (c) 2025 RowDaBoat
 
 import input
-import output #TODO: remove
 import strutils
+import evaluation
 
 
 type Evaluator* = object
-  output: Output#[TODO: remove]#
+  discard
+
+proc evaluateLines*(lines: string): Evaluation =
+  if lines == "":
+    return Evaluation(kind: Empty)
+
+  if "error" in lines:
+    return Evaluation(kind: Error, result: lines)
+
+  return Evaluation(kind: Success, result: lines)
+
+proc newEvaluator*(): Evaluator =
+  Evaluator()
 
 
-proc newEvaluator*(output: Output#[TODO: remove]#): Evaluator =
-  Evaluator(output: output)
-
-
-proc eval*(self: Evaluator, input: Input): bool =
+proc eval*(self: Evaluator, input: Input): Evaluation =
   case input.kind:
   of Lines:
-    if input.lines != "":
-      if "error" in input.lines: #TODO: remove
-        self.output.error(input.lines)
-      else:
-        self.output.okResult(input.lines)
-      return false
+    return evaluateLines(input.lines)
   of Reset:
-    return false
+    return Evaluation(kind: Empty)
   of Editor:
-    return false
+    return Evaluation(kind: Empty)
   of Quit:
-    return true
+    return Evaluation(kind: Quit)
   of EOF:
-    return true
+    return Evaluation(kind: Quit)
