@@ -48,11 +48,10 @@ type ReploidVM* = object
   loadStateTemplate: string
   saveStateTemplate: string
 
-  stateId: int
   compiler: Compiler
   variables: seq[VariableDeclaration]
   newVariables: seq[VariableDeclaration]
-  state: pointer
+  states: seq[LibHandle]
 
 
 proc cased(value: string): string =
@@ -149,7 +148,7 @@ proc generateCommandSource*(self: ReploidVM, command: string): string =
   )
 
 
-proc createStateLoader*(compiler: Compiler): ReploidVM =
+proc newReploidVM*(compiler: Compiler): ReploidVM =
   ReploidVM(
     compiler: compiler,
     stateTemplate: readFile(stateTemplatePath),
@@ -163,14 +162,15 @@ proc createStateLoader*(compiler: Compiler): ReploidVM =
   )
 
 
-proc declareVar*(self: var ReploidVM, variable: VariableDeclaration) =
-  self.newVariables.add(variable)
+proc declareVar*(self: var ReploidVM, declarer: string, name: string, typ: string) =
+  let declaration = VariableDeclaration(declarer: declarer, name: name, typ: typ)
+  self.newVariables.add(declaration)
 
 
 proc rebuildState*(self: var ReploidVM): string =
   let newVariables = self.variables & self.newVariables
   let source = self.generateStateSource(newVariables)
-  let stateLibraryPath = statePath & $self.stateId & libExt
+  let stateLibraryPath = statePath & $self.states.len & libExt
 
   stateSourcePath.writeFile(source)
   discard self.compiler.compileLibrary(stateSourcePath, stateLibraryPath)
@@ -178,15 +178,16 @@ proc rebuildState*(self: var ReploidVM): string =
   let newState = loadLib(stateLibraryPath)
   let initialize = cast[Initialize](newState.symAddr("initialize"))
 
-  initialize(self.state)
-  self.stateId += 1
-  self.state = newState
+  if self.states.len > 0:
+    initialize(self.states[^1])
+
+  self.states.add(newState)
   self.variables = newVariables
   self.newVariables = @[]
 
 
-# TODO: manage dynamic libraries
-# TODO: cleanup on exit
+# DONE: manage dynamic libraries
+# DONE: cleanup on exit
 # TODO: error handling
 # TODO: declare let
 # TODO: support type declarations
@@ -199,4 +200,13 @@ proc runCommand*(self: var ReploidVM, command: string) =
 
   let commandLib = loadLib(commandLibraryPath)
   let run = cast[Run](commandLib.symAddr("run"))
-  run(self.state)
+  run(self.states[^1])
+  unloadLib(commandLib)
+
+proc clean*(self: var ReploidVM) =
+  for state in self.states:
+    unloadLib(state)
+
+  self.states = @[]
+  self.variables = @[]
+  self.newVariables = @[]

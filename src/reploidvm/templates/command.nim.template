@@ -1,7 +1,7 @@
 import dynlib
 import declarations
 
-proc run*(stateLib: pointer) {.exportc, dynlib.} =
+proc run*(stateLib: LibHandle) {.exportc, dynlib.} =
   # Load Get Accessors
   {loadGetAccessors}
 

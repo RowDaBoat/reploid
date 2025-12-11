@@ -1,31 +1,29 @@
 import compiler
-import state
+import vm
 
-let nimCompiler = createCompiler("nim")
-var stateLoader = createStateLoader(nimCompiler)
+let nimCompiler = newNimCompiler("nim")
+var reploidVM = newReploidVM(nimCompiler)
 
-stateLoader.addVariable(VariableDeclaration(declarer: "var", name: "x", typ: "int"))
-discard stateLoader.updateState()
-#stateLoader.addVariable(VariableDeclaration(declarer: "var", name: "value2", typ: "float32"))
-#echo stateLoader.updateState()
-#stateLoader.addVariable(VariableDeclaration(declarer: "var", name: "value3", typ: "string"))
-#echo stateLoader.updateState()
+reploidVM.declareVar("var", "x", "int")
+discard reploidVM.rebuildState()
 
 for i in 0 ..< 2:
-  stateLoader.runCommand("""
+  reploidVM.runCommand("""
 x += 1
-echo "Counting x:", x
+echo "Counting x: ", x
 """
   )
 
-stateLoader.addVariable(VariableDeclaration(declarer: "var", name: "y", typ: "int"))
-discard stateLoader.updateState()
+reploidVM.declareVar("var", "y", "int")
+discard reploidVM.rebuildState()
 
 for i in 0 ..< 8:
-  stateLoader.runCommand("""
+  reploidVM.runCommand("""
 x += 1
 y += 1
 echo "Counting x: ", x
 echo "Counting y: ", y
 """
     )
+
+reploidVM.clean()

@@ -1,6 +1,5 @@
 import strutils
 import osproc
-import times
 
 type Compiler* = object
   nim: string
@@ -17,7 +16,7 @@ const compileLibraryCommand = [
     "--opt:none"
 ]
 
-proc createCompiler*(nim: string): Compiler =
+proc newNimCompiler*(nim: string): Compiler =
   Compiler(nim: nim)
 
 
