@@ -475,10 +475,12 @@ proc main(nim = "nim", srcFile = "", showHeader = true,
   assert not isNil config
   when promptHistory:
     # When prompt history is enabled, we want to load history
-    historyFile = if config.getOrSetSectionKeyValue("History", "persistent",
-        "True") == "True":
-                    ConfigDir / "history.nim"
-                  else: tmpHistory
+    historyFile =
+      if config.getOrSetSectionKeyValue("History", "persistent", "True") == "True":
+        ConfigDir / "history.nim"
+      else:
+        tmpHistory
+
     discard noiser.historyLoad(historyFile)
 
   # Force show types

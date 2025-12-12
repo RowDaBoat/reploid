@@ -15,9 +15,12 @@ if isMainModule:
   var reader = newReader(output)
   var evaluator = newEvaluator()
   var printer = newPrinter(output)
-  var evaluation = Evaluation()
+  var quit = false
 
-  while evaluation.kind != Quit:
+  while not quit:
     let input = reader.read()
-    evaluation = evaluator.eval(input)
+    let evaluation = evaluator.eval(input)
     printer.print(evaluation)
+    quit = evaluation.kind == Quit
+
+  reader.cleanup()

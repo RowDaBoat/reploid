@@ -13,31 +13,32 @@ type Reader* = object
   promptMessage: string
   promptSymbol: string
   indentation: string
+  historyFile: string
 
 
-const IndentTriggers* = [
+const IndentTriggers = [
       ",", "=", ":",
       "var", "let", "const", "type", "import",
       "object", "RootObj", "enum"
   ]
 
 
-proc setMainPrompt*(self: var Reader) =
+proc setMainPrompt(self: var Reader) =
   let prompt = self.output.styledPrompt(self.promptMessage, self.promptSymbol & " ")
   self.noise.setPrompt(prompt)
 
 
-proc setMultilinePrompt*(self: var Reader) =
+proc setMultilinePrompt(self: var Reader) =
   let promptMessage = ".".repeat(self.promptMessage.len + self.promptSymbol.len - 1)
   let prompt = self.output.styledPrompt(promptMessage, ". ")
   self.noise.setPrompt(prompt)
 
 
-proc setIndentation*(self: var Reader, indentationLevels: int) =
+proc setIndentation(self: var Reader, indentationLevels: int) =
   let indentation = self.indentation.repeat(indentationLevels)
   self.noise.preloadBuffer(indentation, collapseWhitespaces = false)
 
-proc indent*(line: string): bool =
+proc indent(line: string): bool =
   if line.len == 0:
     return
 
@@ -46,23 +47,22 @@ proc indent*(line: string): bool =
       result = true
 
 
-proc unindent*(indentation: int, line: string): bool =
+proc unindent(indentation: int, line: string): bool =
   indentation > 0 and line.strip.len == 0
 
 
-proc newReader*(
-  output: Output,
-  promptMessage: string = "reploid",
-  promptSymbol: string = ">",
-  indentation: string = "  "
-): Reader =
-  Reader(
-    noise: Noise.init(),
-    output: output,
-    promptMessage: promptMessage,
-    promptSymbol: promptSymbol,
-    indentation: indentation
-  )
+proc loadHistory(self: var Reader) =
+  if self.historyFile != "":
+    discard self.noise.historyLoad(self.historyFile)
+
+
+proc saveHistory(self: var Reader) =
+  if self.historyFile != "":
+    discard self.noise.historySave(self.historyFile)
+
+
+proc addHistory(self: var Reader, line: string) =
+  self.noise.historyAdd(line)
 
 
 proc readSingleLine(self: var Reader): Input =
@@ -84,7 +84,30 @@ proc readSingleLine(self: var Reader): Input =
     else:
       return Input(kind: Lines, lines: "")
 
-  return Input(kind: Lines, lines: self.noise.getLine())
+  let line = self.noise.getLine()
+  self.addHistory(line)
+  return Input(kind: Lines, lines: line)
+
+
+proc newReader*(
+  output: Output,
+  promptMessage: string = "reploid",
+  promptSymbol: string = ">",
+  indentation: string = "  ",
+  historyFile: string = ""
+): Reader =
+  var noise = Noise.init()
+
+  result = Reader(
+    noise: noise,
+    output: output,
+    promptMessage: promptMessage,
+    promptSymbol: promptSymbol,
+    indentation: indentation,
+    historyFile: historyFile
+  )
+  result.loadHistory()
+
 
 proc read*(self: var Reader): Input =
   var complete = false
@@ -115,3 +138,7 @@ proc read*(self: var Reader): Input =
     complete = indentation == 0
 
   result = Input(kind: Lines, lines: lines.join("\n"))
+
+
+proc cleanup*(self: var Reader) =
+  self.saveHistory()
