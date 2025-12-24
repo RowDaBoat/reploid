@@ -33,10 +33,11 @@ type Configuration = object
 # DONE: support type declarations
 # DONE: parametrize tmp paths
 # DONE: import templates in compile time
-# TODO: integrate ReploidVM
+# DONE: integrate ReploidVM
+# TODO: success and error output
 # TODO: integrate commands
-# TODO: error handling
 # TODO: integrate tcc
+# TODO: properly support let and const
 # TODO: rewrite tests
 # TODO: write docs
 # TODO: options:

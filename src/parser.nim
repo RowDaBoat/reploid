@@ -67,3 +67,31 @@ proc matchLabel*(self: Parser): Parser =
     result.expected = "a label"
   else:
     result.tokens.add(token)
+
+
+proc matchUpTo*(self: Parser, texts: varargs[string]): Parser =
+  if not self.ok:
+    return self
+
+  result = self
+  var min = self.text.len
+  var matchingText = ""
+
+  for text in texts:
+    let found = self.text.find(text)
+
+    if found >= 0 and found < min:
+      min = found
+      matchingText = text
+
+  let token = self.text[0 ..< min]
+  let rest = self.text[min..^1]
+
+  if token.len == 0:
+    result.ok = false
+    result.expected = "unexpected " & matchingText
+  else:
+    result.text = rest
+    result.tokens.add(token)
+    return
+

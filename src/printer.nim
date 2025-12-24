@@ -18,11 +18,8 @@ proc print*(self: Printer, evaluation: Evaluation) =
   of Success:
     self.output.okResult(evaluation.result)
   of Error:
-    stdout.write("[")
     self.output.error(evaluation.result)
-    stdout.write("]")
   of Quit:
-    stdout.write("quit")
     discard
   of Empty:
     discard

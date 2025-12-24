@@ -1,8 +1,22 @@
 import dynlib
 include imports
 include declarations
+import typetraits
 
-proc run*(stateLib: LibHandle) {.exportc, dynlib.} =
+
+template showIfTyped(body: untyped): string =
+  type typ = typeof(body)
+
+  block:
+    when typ is void:
+      body
+      ""
+    else:
+      let value = body
+      "'" & $value & "'" & " type: " & typeof(body).name
+
+
+proc run*(stateLib: LibHandle): string {.exportc, dynlib.} =
   # Load Get Accessors
   {loadGetAccessors}
 
@@ -13,7 +27,8 @@ proc run*(stateLib: LibHandle) {.exportc, dynlib.} =
   {loadState}
 
   # Command
-  {command}
+  result = showIfTyped:
+    {command}
 
   # Save State
   {saveState}

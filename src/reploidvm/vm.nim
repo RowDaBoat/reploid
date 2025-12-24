@@ -25,8 +25,9 @@ const stateUpdaterTemplate =      staticRead(templatesPath/"stateupdater" & temp
 const loadStateTemplate =         staticRead(templatesPath/"loadstate" & templateExt)
 const saveStateTemplate =         staticRead(templatesPath/"savestate" & templateExt)
 
+
 type Initialize* = proc(oldStateLib: pointer) {.gcsafe, stdcall.}
-type Run* = proc(state: pointer) {.gcsafe, stdcall.}
+type Run* = proc(state: pointer): string {.gcsafe, stdcall.}
 
 
 type VariableDeclaration* = object
@@ -54,6 +55,7 @@ type ReploidVM* = object
   declarations: seq[string]
   newDeclarations: seq[string]
   states: seq[LibHandle]
+  commandsBuilt: int
 
   importsPath: string
   declarationsPath: string
@@ -254,15 +256,16 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
   let source = self.generateCommandSource(command)
   srcPath.writeFile(source)
 
-  let libPath = self.commandPath & libExt
+  let libPath = self.commandPath & $self.commandsBuilt & libExt
   result = self.compiler.compileLibrary(srcPath, libPath)
 
   if not result.isSuccess:
     return result
 
+  inc self.commandsBuilt
   let commandLib = loadLib(libPath)
   let run = cast[Run](commandLib.symAddr("run"))
-  run(self.states[^1])
+  result[0] = run(if self.states.len == 0: nil else: self.states[^1])
   unloadLib(commandLib)
 
 

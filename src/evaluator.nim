@@ -30,7 +30,7 @@ proc isVariableDeclaration(lines: string): Parser =
     .consumeSpaces()
     .matchKeywords(":")
     .consumeSpaces()
-    .matchLabel()
+    .matchUpTo("=")
 
 
 proc isDeclaration(lines: string): Parser =
@@ -57,7 +57,7 @@ proc evaluateLines(self: var Evaluator, lines: string): Evaluation =
   if varDeclResult.ok:
     let declarer = varDeclResult.tokens[0]
     let label = varDeclResult.tokens[1]
-    let typ = varDeclResult.tokens[3]
+    let typ = varDeclResult.tokens[3].strip()
     let rest = varDeclResult.text
 
     self.vm.declareVar(declarer, label, typ, rest)
@@ -78,8 +78,12 @@ proc evaluateLines(self: var Evaluator, lines: string): Evaluation =
       result: updateDeclarationsResult[0]
     )
 
-  # command
-  return Evaluation(kind: Success)
+  let runResult = self.vm.runCommand(lines)
+
+  return Evaluation(
+    kind: if runResult.isSuccess: Success else: Error,
+    result: runResult[0]
+  )
 
 
 proc newEvaluator*(vm: ReploidVM): Evaluator =
