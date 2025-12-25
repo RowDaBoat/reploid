@@ -55,12 +55,10 @@ proc matchLabel*(self: Parser): Parser =
 
   result = self
   var token = ""
-  var next = result.text[0]
 
-  while result.text.startsAsLabel:
-    token &= next
+  while result.text.len > 0 and result.text.startsAsLabel:
+    token &= result.text[0]
     result.text = result.text[1..^1]
-    next = result.text[0]
 
   if token.len == 0:
     result.ok = false
