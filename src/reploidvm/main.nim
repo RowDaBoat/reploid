@@ -2,14 +2,14 @@
 # Copyright (c) 2025 RowDaBoat
 
 import vm
-import ../compiler
+import compiler
 
 let nimCompiler = newNimCompiler("nim", @[])
 var reploidVM = newReploidVM(nimCompiler)
 var result: (string, int)
 
 echo "Running a basic command:"
-reploidVM.declareVar("var", "x", "int")
+reploidVM.declareVar("var", "x", "int", "")
 discard reploidVM.updateState()
 
 for i in 0 ..< 2:
@@ -20,7 +20,7 @@ echo "Counting x: ", x
     )
   assert result.isSuccess, "Failed to run command: " & result[0]
 
-reploidVM.declareVar("var", "y", "int")
+reploidVM.declareVar("var", "y", "int", "")
 discard reploidVM.updateState()
 
 for i in 0 ..< 8:
@@ -43,7 +43,7 @@ assert result.isSuccess, "Failed to update imports: " & result[0]
 echo "Imports updated successfully."
 
 echo "Updating state..."
-reploidVM.declareVar("var", "name", "string")
+reploidVM.declareVar("var", "name", "string", "")
 
 result = reploidVM.updateState()
 assert result.isSuccess, "Failed to update state: " & result[0]

@@ -6,12 +6,12 @@ import dynlib
 import sequtils
 import strutils
 
-import ../compiler
+import compiler
 import temple
 
 
-const nimExt = ".nim"
-const libExt = ".lib"
+const nimExt* = ".nim"
+const libExt* = ".lib"
 const templateExt = ".nim.template"
 const templatesPath = "templates"
 
@@ -213,7 +213,7 @@ proc updateImports*(self: var ReploidVM): (string, int) =
 
 proc updateDeclarations*(self: var ReploidVM): (string, int) =
   let declarations = self.declarations & self.newDeclarations
-  let source = declarations.join("\n")
+  let source = declarations.join("\n\n")
   let srcPath = self.declarationsPath & nimExt
   let libPath = self.declarationsPath & libExt
 
@@ -267,6 +267,14 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
   let run = cast[Run](commandLib.symAddr("run"))
   result[0] = run(if self.states.len == 0: nil else: self.states[^1])
   unloadLib(commandLib)
+
+
+proc importsSource*(self: ReploidVM): string =
+  readFile(self.importsPath & nimExt)
+
+
+proc declarationsSource*(self: ReploidVM): string =
+  readFile(self.declarationsPath & nimExt)
 
 
 proc clean*(self: var ReploidVM) =

@@ -1,0 +1,7 @@
+import commands
+import ../repl/evaluation
+import ../reploidvm/vm
+
+
+proc declarationsSource*(commandsApi: var CommandsApi, args: seq[string]): Evaluation =
+  Evaluation(kind: Success, result: commandsApi.vm.declarationsSource)

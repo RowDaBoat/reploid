@@ -2,17 +2,24 @@
 # Copyright (c) 2025 RowDaBoat
 
 import strformat
-import styledoutput
-import sequtils
-import welcome
-import compiler
-import reploidvm/vm
-import reader
-import evaluator
-import printer
-import evaluation
-import cliquet
 import os
+import tables
+
+import cliquet
+
+import sequtils
+import reploidvm/compiler
+import reploidvm/vm
+import repl/reader
+import repl/evaluator
+import repl/printer
+import repl/welcome
+import repl/styledoutput
+import repl/evaluation
+import commands/commands
+import commands/imports
+import commands/declarations
+import commands/quit
 
 
 type Configuration = object
@@ -35,9 +42,8 @@ type Configuration = object
 # DONE: import templates in compile time
 # DONE: integrate ReploidVM
 # DONE: success output
-# TODO: error output
-# TODO: integrate commands
-# TODO: integrate tcc
+# DONE: error output
+# DONE: integrate commands
 # TODO: properly support let and const
 # TODO: rewrite tests
 # TODO: write docs
@@ -48,7 +54,30 @@ type Configuration = object
 # TODO:   "withTools": "Load handy tools"
 # TODO:   "backend": "Backend to use [script, static, dynamic]"
 
-proc reploid(configuration: Configuration) =
+proc defaultConfig*(): Configuration =
+  let reploidDir = getHomeDir()/".reploid"
+  result = Configuration(
+    nim: "nim",
+    welcome: true,
+    flags: @[],
+    config: reploidDir/"config",
+    history: reploidDir/"history",
+    colors: true,
+    help: false
+  )
+
+
+proc defaultCommands*(): Table[string, Command] = commands(
+  command("imports", "shows all imports", importsSource),
+  command("declarations", "shows all type and proc declarations", declarationsSource),
+  command("quit", "quits reploid", quitReploid)
+)
+
+
+proc reploid*(
+  configuration: Configuration = defaultConfig(),
+  commands: Table[string, Command] = defaultCommands()
+) =
   let output = newOutput(colors = configuration.colors)
   let compiler = newNimCompiler(configuration.nim, configuration.flags)
 
@@ -60,8 +89,14 @@ proc reploid(configuration: Configuration) =
     return
 
   var vm = newReploidVM(compiler)
+
+  var commandsApi = CommandsApi(
+    output: output,
+    compiler: compiler,
+    vm: vm
+  )
   var reader = newReader(output, historyFile = configuration.history)
-  var evaluator = newEvaluator(vm)
+  var evaluator = newEvaluator(commandsApi, commands, vm)
   var printer = newPrinter(output)
   var quit = false
 
@@ -111,22 +146,7 @@ proc helpAndQuit(cli: var Cliquet[Configuration]) =
 
 
 when isMainModule:
-  let reploidDir = getHomeDir()/".reploid"
-  let configFile = reploidDir/"config"
-  let historyFile = reploidDir/"history"
-
-  var cli = initCliquet(
-    default = Configuration(
-      nim: "nim",
-      welcome: true,
-      flags: @[],
-      config: configFile,
-      history: historyFile,
-      colors: true,
-      help: false
-    )
-  )
-
+  var cli = initCliquet(default = defaultConfig())
   let args = commandLineParams()
   discard cli.parseOptions(args)
 

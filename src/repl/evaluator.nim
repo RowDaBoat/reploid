@@ -1,19 +1,35 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 
+import strutils
+import tables
+
 import input
 import evaluation
-import reploidvm/vm
 import parser
-import strutils
+import ../reploidvm/vm
+import ../commands/commands
 
 
 type Evaluator* = object
+  commandsApi: CommandsApi
+  commands: Table[string, Command]
   vm: ReploidVM
 
 
 proc isEmpty(lines: string): bool =
   lines.strip().len == 0
+
+
+proc getCommand(self: Evaluator, lines: string): (bool, Command, seq[string]) =
+  let split = lines.splitWhitespace()
+  let command = split[0]
+  let args = split[1..^1]
+
+  return if command in self.commands:
+    (true, self.commands[command], args)
+  else:
+    (false, Command(), @[])
 
 
 proc isImport(lines: string): Parser =
@@ -42,6 +58,10 @@ proc isDeclaration(lines: string): Parser =
 proc evaluateLines(self: var Evaluator, lines: string): Evaluation =
   if lines.isEmpty():
     return Evaluation(kind: Empty)
+
+  let (isCommand, command, args) = self.getCommand(lines)
+  if isCommand:
+    return command.run(self.commandsApi, args)
 
   let importResult = lines.isImport()
   if importResult.ok:
@@ -86,8 +106,11 @@ proc evaluateLines(self: var Evaluator, lines: string): Evaluation =
   )
 
 
-proc newEvaluator*(vm: ReploidVM): Evaluator =
-  Evaluator(vm: vm)
+proc newEvaluator*(
+  commandsApi: CommandsApi,
+  commands: Table[string, Command],
+  vm: ReploidVM
+): Evaluator = Evaluator(commandsApi: commandsApi, vm: vm, commands: commands)
 
 
 proc eval*(self: var Evaluator, input: Input): Evaluation =
