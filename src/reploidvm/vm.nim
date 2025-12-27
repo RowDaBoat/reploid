@@ -11,7 +11,10 @@ import temple
 
 
 const nimExt* = ".nim"
-const libExt* = ".lib"
+const libExt* =
+  when defined(windows): ".dll"
+  elif defined(macosx): ".dylib"
+  else: ".so"
 const templateExt = ".nim.template"
 const templatesPath = "templates"
 
