@@ -45,7 +45,7 @@ proc defaultConfig*(): Configuration =
 
 
 proc defaultCommands*(): Table[string, Command] = commands(
-  command("source", "<imports|declarations|command> shows the source of imports, declarations or the last command", sourceCmd),
+  command("source", "<imports|declarations|state|command> shows the source of imports, declarations, the current state, or the last command", sourceCmd),
   command("quit", "quits reploid", quitCmd)
 )
 

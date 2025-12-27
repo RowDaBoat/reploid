@@ -70,6 +70,17 @@ suite "Reploid VM should:":
       check result == ("'" & $(start + i + 1) & "' type: int", 0)
 
 
+  test "initialize a string variable":
+    let value = "Protobot."
+    vm.declareVar("var", "x", "string", " = \"" & value & "\"")
+
+    result = vm.updateState()
+    check result == ("", 0)
+
+    result = vm.runCommand("x")
+    check result == ("'" & value & "' type: string", 0)
+
+
   test "import a library":
     # TODO: the argument should not have to include the "import" keyword
     vm.declareImport("import strutils")

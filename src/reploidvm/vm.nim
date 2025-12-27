@@ -29,8 +29,8 @@ const loadStateTemplate =         staticRead(templatesPath/"loadstate" & templat
 const saveStateTemplate =         staticRead(templatesPath/"savestate" & templateExt)
 
 
-type Initialize* = proc(oldStateLib: pointer) {.gcsafe, stdcall.}
-type Run* = proc(state: pointer): string {.gcsafe, stdcall.}
+type Initialize* = proc(oldStateLib: pointer) {.stdcall.}
+type Run* = proc(state: pointer): string {.stdcall.}
 
 
 type VariableDeclaration* = object
@@ -182,7 +182,8 @@ proc newReploidVM*(compiler: Compiler, tempPath: string = getTempDir()): Reploid
   )
   (result.importsPath & nimExt).writeFile("")
   (result.declarationsPath & nimExt).writeFile("")
-
+  (result.statePath & nimExt).writeFile("")
+  (result.commandPath & nimExt).writeFile("")
 
 proc isSuccess*(toCheck: (string, int)): bool =
   toCheck[1] == 0
@@ -246,7 +247,17 @@ proc updateState*(self: var ReploidVM): (string, int) =
     return result
 
   let newState = loadLib(libPath)
+  let nimMain = cast[proc(){.cdecl.}](newState.symAddr("NimMain"))
   let initialize = cast[Initialize](newState.symAddr("initialize"))
+
+
+  if nimMain.isNil:
+    raise newException(Exception, "Failed to get 'NimMain' symbol from state library: " & libPath)
+
+  if initialize.isNil:
+    raise newException(Exception, "Failed to get 'initialize' symbol from state library: " & libPath)
+
+  nimMain()
 
   if self.states.len > 0:
     initialize(self.states[^1])
@@ -287,15 +298,23 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
 
 
 proc importsSource*(self: ReploidVM): string =
+  self.importsPath & nimExt & ":\n" &
   readFile(self.importsPath & nimExt)
 
 
 proc declarationsSource*(self: ReploidVM): string =
+  self.declarationsPath & nimExt & ":\n" &
   readFile(self.declarationsPath & nimExt)
 
 
 proc commandSource*(self: ReploidVM): string =
+  self.commandPath & nimExt & ":\n" &
   readFile(self.commandPath & nimExt)
+
+
+proc stateSource*(self: ReploidVM): string =
+  self.statePath & nimExt & ":\n" &
+  readFile(self.statePath & nimExt)
 
 
 proc clean*(self: var ReploidVM) =
