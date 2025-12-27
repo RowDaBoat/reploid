@@ -13,7 +13,7 @@ template showIfTyped(body: untyped): string =
       ""
     else:
       let value = body
-      "'" & $value & "'" & " type: " & typeof(body).name
+      "'" & $value & "'" & " type: " & $typeof(value)
 
 
 proc run*(stateLib: LibHandle): string {.exportc, dynlib.} =

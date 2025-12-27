@@ -31,26 +31,6 @@ type Configuration = object
   history {.help: "History file to use".}               : string
   colors  {.help: "Display colors".}                    : bool
 
-# DONE: manage dynamic libraries
-# DONE: cleanup on exit
-# DONE: integrate command line args using cliquet
-# DONE: integrate rc configuration file
-# DONE: add declarations for procs and types
-# DONE: declare let, var, const
-# DONE: support type declarations
-# DONE: parametrize tmp paths
-# DONE: import templates in compile time
-# DONE: integrate ReploidVM
-# DONE: success output
-# DONE: error output
-# DONE: integrate commands
-# TODO: properly support let and const
-# TODO: rewrite tests
-# TODO: write docs
-# TODO: options:
-# TODO:   "prelude": "Nim scripts to preload"
-# TODO:   "showTypes": "Show var types when printing var without echo"
-# TODO:   "noAutoIndent": "Disable automatic indentation"
 
 proc defaultConfig*(): Configuration =
   let reploidDir = getHomeDir()/".reploid"

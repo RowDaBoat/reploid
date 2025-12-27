@@ -1,15 +1,5 @@
 nimcache/
-src/inim
-src/inim.exe
-inim_*
-temp.nim
-temp
-./inim
-test/test
 bin/
-tests/test
-tests/test_commands
-tests/test_interface
-inim
-inim.ini
 .vscode
+*.local
+reploid

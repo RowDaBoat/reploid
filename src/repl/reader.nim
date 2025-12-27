@@ -17,10 +17,10 @@ type Reader* = object
 
 
 const IndentTriggers = [
-      ",", "=", ":",
-      "var", "let", "const", "type", "import",
-      "object", "RootObj", "enum"
-  ]
+  ",", "=", ":",
+  "var", "let", "const", "type", "import",
+  "object", "RootObj", "enum"
+]
 
 
 proc setMainPrompt(self: var Reader) =

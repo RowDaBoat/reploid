@@ -1,8 +1,9 @@
+# ISC License
+# Copyright (c) 2025 RowDaBoat
+
 import tables
 import sequtils
-import strformat
 import strutils
-
 import ../repl/evaluation
 import ../reploidvm/compiler
 import ../reploidvm/vm
@@ -54,9 +55,3 @@ proc commands*(commands: varargs[Command]): Table[string, Command] =
 
   let helpCommand = buildHelpCommand(commands.toSeq)
   result[helpCommand.name] = helpCommand
-
-#[
-  declatations: shows declarations source code
-  help:         shows this help message
-  quit:         quits reploid
-]#

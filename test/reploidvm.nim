@@ -1,8 +1,9 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 
-import vm
-import compiler
+import ../src/reploidvm/vm
+import ../src/reploidvm/compiler
+
 
 let nimCompiler = newNimCompiler("nim", @[])
 var reploidVM = newReploidVM(nimCompiler)

@@ -1,55 +1,38 @@
-# INim: interactive shell (REPL)
-![Nim CI](https://github.com/inim-repl/INim/workflows/Nim%20CI/badge.svg)
+# Reploid: a Nim REPL
 
-```
-nimble install inim
-```
+Reploid is a Nim REPL originally forked from [INim](https://github.com/inim-repl/INim), however the code has been rewritten from scratch, trying to keep the most useful features, and fixing the most shortcommings.
 
-<img width="721" alt="Screenshot 2024-06-28 at 18 33 47" src="https://github.com/inim-repl/INim/assets/1467605/523c973b-ca2c-450e-92f2-187e2e580be0">
+INim simulated the REPL behavior by re-running all the previous commands each time, and hiding the output of previous commands. Reploid instead runs each command just once by using its own virtual machine to keep track of the state.
+
 
 ## Features
+- Automatic indentation (`if`, `for`, `proc`, `var`, ...)
+- Command history support
+- Uses `nim` compiler in PATH, or a custom path. 
+- Can be configured through command line arguments or a configuration file.
+- Prints out value and type of expressions.
+- Runs in the current directory, `import` modules relative to the current directory.
+- Colorized output
+- Nim compiler options can be specified with the `--flags` option (ie: `reploid --flags=DEBUG,ssl`)
 
-* Runs on Linux, macOS and Windows
-* Auto-indent (`if`, `for`, `proc`, `var`, ...)
-* Arrow keys support (command history and line navigation)
-* Prints out value and type of discarded expressions: ```>>> x```
-* Uses current `nim` compiler in PATH
-* Runs in the current directory: `import` your local modules (access to exported* symbols)
-* Preload existing source code (access to non-exported* symbols): `inim -s example.nim`
-* Optional Colorized output
-* Edit lines using $EDITOR (Ctrl-X)
-* Built in tools like ipython (cd(), ls(), pwd(), call()) enabled with `--withTools`
-* When piped a file or some code, INim will execute that code and exit
-* Extra compiler options can be specified by adding them as arguments inim with the -d flag (ie `inim -d:ssl -d:DEBUG`)
-* Flags can turned on with `-d` by adding a `--` prefix to arguments (ie -d:--threads:on)
-* Use [`nimscripter`](https://github.com/beef331/nimscripter) as backend instead of `nim c` with `--useNims`, compile with `-d:release` for faster execution
 
-## Configuration
+### Planned features
+- Run on Linux, MacOS and Windows
+- Setup one or more pre-imported preludes.
+- Edit lines using `$EDITOR` (Ctrl-X)
 
-`inim --createRcFile`, for persistent configuration which is loaded from these locations:
 
-* Linux & macOS: `~/.config/inim`
-* Windows: `%APPDATA%\inim`
+## Confiugrations and arguments
+- **nim**: path to the nim compiler, default is just `nim`
+- **welcome**: enable/disable the welcome message, enabled by default
+- **flags**: comma separated list of flags to pass to the nim compiler
+- **config**: configuration file to use, default is ~/.reploid/config
+- **history**: history file to use, default is ~/.reploid/history
+- **colors**: enabel/disable colors, enabled by default
+- **help**: show the help message
 
-The config allows you to change the defaults for:
-
-* Style
-  * `prompt`: Set prompt string (default: "inim> ")
-  * `showTypes`: Show var types when printing without echo (default: true)
-  * `showColor`: Output results with pretty colors
-* History
-  * persistent history (default: true)
-* Features
-  * `withTools`: Enable built in tools
-
-## Contributing
-
-Pull requests and suggestions are welcome.
-
-<a href="https://star-history.com/#inim-repl/INim&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=inim-repl/INim&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=inim-repl/INim&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=inim-repl/INim&type=Date" />
- </picture>
-</a>
+## Commands
+ - **imports**: shows all imports
+ - **declarations**: shows all type and proc declarations
+ - **quit**: quits reploid
+ - **help**: show this help message
