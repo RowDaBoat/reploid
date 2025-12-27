@@ -270,7 +270,16 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
 
   inc commandId
   let commandLib = loadLib(libPath)
-  let run = cast[Run](commandLib.symAddr("run"))
+
+  if commandLib.isNil:
+    raise newException(Exception, "Failed to load command library: " & libPath)
+
+  let runPointer = commandLib.symAddr("run")
+
+  if runPointer.isNil:
+    raise newException(Exception, "Failed to get 'run' symbol from command library: " & libPath)
+
+  let run = cast[Run](runPointer)
   result[0] = run(if self.states.len == 0: nil else: self.states[^1])
   unloadLib(commandLib)
 
