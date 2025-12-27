@@ -13,3 +13,6 @@ srcDir        = "src"
 
 requires "https://github.com/RowDaBoat/cliquet.git#master"
 requires "https://github.com/jangko/nim-noise.git#master"
+
+task test, "Run the test suite":
+  exec "nim r test/reploidvm.nim"

@@ -37,6 +37,9 @@ type VariableDeclaration* = object
   rest*: string
 
 
+var stateId: int = 0
+var commandId: int = 0
+
 type ReploidVM* = object
   stateTemplate: string
   commandTemplate: string
@@ -55,7 +58,6 @@ type ReploidVM* = object
   declarations: seq[string]
   newDeclarations: seq[string]
   states: seq[LibHandle]
-  commandsBuilt: int
 
   importsPath: string
   declarationsPath: string
@@ -230,7 +232,7 @@ proc updateState*(self: var ReploidVM): (string, int) =
   let newVariables = self.variables & self.newVariables
   let source = self.generateStateSource(newVariables)
   let srcPath = self.statePath & nimExt
-  let libPath = self.statePath & $self.states.len & libExt
+  let libPath = self.statePath & $stateId & libExt
 
   srcPath.writeFile(source)
 
@@ -246,6 +248,7 @@ proc updateState*(self: var ReploidVM): (string, int) =
   if self.states.len > 0:
     initialize(self.states[^1])
 
+  inc stateId
   self.states.add(newState)
   self.variables = newVariables
   self.newVariables = @[]
@@ -256,13 +259,13 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
   let source = self.generateCommandSource(command)
   srcPath.writeFile(source)
 
-  let libPath = self.commandPath & $self.commandsBuilt & libExt
+  let libPath = self.commandPath & $commandId & libExt
   result = self.compiler.compileLibrary(srcPath, libPath)
 
   if not result.isSuccess:
     return result
 
-  inc self.commandsBuilt
+  inc commandId
   let commandLib = loadLib(libPath)
   let run = cast[Run](commandLib.symAddr("run"))
   result[0] = run(if self.states.len == 0: nil else: self.states[^1])

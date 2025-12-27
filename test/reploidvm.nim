@@ -1,62 +1,81 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 
+import unittest
 import ../src/reploidvm/vm
 import ../src/reploidvm/compiler
 
 
-let nimCompiler = newNimCompiler("nim", @[])
-var reploidVM = newReploidVM(nimCompiler)
-var result: (string, int)
+suite "Reploid VM should:":
+  setup:
+    let nim = newNimCompiler("nim", @[])
+    var vm = newReploidVM(nim)
+    var result: (string, int)
 
-echo "Running a basic command:"
-reploidVM.declareVar("var", "x", "int", "")
-discard reploidVM.updateState()
+  teardown:
+    vm.clean()
 
-for i in 0 ..< 2:
-  result = reploidVM.runCommand("""
-x += 1
-echo "Counting x: ", x
-"""
-    )
-  assert result.isSuccess, "Failed to run command: " & result[0]
+  test "run a simple command":
+    result = vm.runCommand("echo \"Protobot.\"")
+    check result == ("", 0)
 
-reploidVM.declareVar("var", "y", "int", "")
-discard reploidVM.updateState()
 
-for i in 0 ..< 8:
-  result = reploidVM.runCommand("""
-x += 1
-y += 1
-echo "Counting x: ", x
-echo "Counting y: ", y
-"""
-    )
-  assert result.isSuccess, "Failed to run command: " & result[0]
+  test "return an int value":
+    let value = 100001
+    result = vm.runCommand($value)
+    check result == ("'" & $value & "' type: int", 0)
 
-reploidVM.clean()
-echo ""
 
-echo "Running an import..."
-reploidVM.declareImport("import strutils")
-result = reploidVM.updateImports()
-assert result.isSuccess, "Failed to update imports: " & result[0]
-echo "Imports updated successfully."
+  test "return a string value":
+    let value = "Protobot."
+    result = vm.runCommand('"' & value & '"')
+    check result == ("'" & value & "' type: string", 0)
 
-echo "Updating state..."
-reploidVM.declareVar("var", "name", "string", "")
 
-result = reploidVM.updateState()
-assert result.isSuccess, "Failed to update state: " & result[0]
-echo "State updated successfully."
+  test "declare a variable":
+    vm.declareVar("var", "x", "int", " = 20")
 
-echo "Running a command..."
-var source = """
-name = "Protobot"; echo name, " has ", name.count('o'), " o's."
-"""
-result = reploidVM.runCommand(source)
-assert result.isSuccess, "Failed to run command: " & result[0]
-echo "Command run successfully."
+    result = vm.updateState()
+    check result == ("", 0)
 
-reploidVM.clean()
-echo ""
+    result = vm.runCommand("x")
+    check result == ("'20' type: int", 0)
+
+
+  test "update the value of a variable":
+    vm.declareVar("var", "x", "int", " = 20")
+
+    result = vm.updateState()
+    check result == ("", 0)
+
+    result = vm.runCommand("inc x")
+    check result == ("", 0)
+
+    result = vm.runCommand("x")
+    check result == ("'21' type: int", 0)
+
+
+  test "update many times the value of a variable":
+    let start = 20
+    vm.declareVar("var", "x", "int", " = " & $start)
+
+    result = vm.updateState()
+    check result == ("", 0)
+
+    for i in 0 ..< 5:
+      result = vm.runCommand("inc x")
+      check result == ("", 0)
+
+      result = vm.runCommand("x")
+      check result == ("'" & $(start + i + 1) & "' type: int", 0)
+
+
+  test "import a library":
+    # TODO: the argument should not have to include the "import" keyword
+    vm.declareImport("import strutils")
+
+    result = vm.updateImports()
+    check result[1] == 0
+
+    result = vm.runCommand("@[\"Imports\", \"are\", \"working.\"].join(\" \")")
+    check result == ("'Imports are working.' type: string", 0)
