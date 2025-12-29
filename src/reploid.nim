@@ -101,7 +101,9 @@ proc createDirs(path: string) =
 
   while not dirExists(pathToCheck):
     paths.add(pathToCheck)
-    (pathToCheck, _) = pathToCheck.splitPath
+    
+    let (newPath, _) = pathToCheck.splitPath
+    pathToCheck = newPath
 
   for i in countdown(paths.high, 0):
     createDir(paths[i])
