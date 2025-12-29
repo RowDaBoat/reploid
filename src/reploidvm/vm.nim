@@ -20,8 +20,8 @@ const templatesPath = "templates"
 
 const stateTemplate =             staticRead(templatesPath/"state" & templateExt)
 const commandTemplate =           staticRead(templatesPath/"command" & templateExt)
-const getAccessorTemplate =      staticRead(templatesPath/"getaccessor" & templateExt)
-const setAccessorTemplate =      staticRead(templatesPath/"setaccessor" & templateExt)
+const getAccessorTemplate =       staticRead(templatesPath/"getaccessor" & templateExt)
+const setAccessorTemplate =       staticRead(templatesPath/"setaccessor" & templateExt)
 const getAccessorSymbolTemplate = staticRead(templatesPath/"getaccessorsymbol" & templateExt)
 const setAccessorSymbolTemplate = staticRead(templatesPath/"setaccessorsymbol" & templateExt)
 const stateUpdaterTemplate =      staticRead(templatesPath/"stateupdater" & templateExt)

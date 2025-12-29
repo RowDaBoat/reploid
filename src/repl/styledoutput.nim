@@ -57,7 +57,7 @@ proc newOutput*(
     )
 
 
-proc write*(self: Output, message: string, color: ColorScheme = colorScheme(), newline = true) =
+proc write*(self: Output, message: string, color: ColorScheme = colorScheme()) =
   let fg = color.fg
   let bg = color.bg
 
@@ -67,42 +67,41 @@ proc write*(self: Output, message: string, color: ColorScheme = colorScheme(), n
   if bg.isSome:
     stdout.setBackgroundColor(bg.get[0], bg.get[1])
 
-  let trail = if message.len == 0 or message[^1] == '\n' or not newline: "" else: "\n"
-  stdout.write(message & trail)
+  stdout.write(message)
   stdout.resetAttributes()
   stdout.flushFile()
 
 
-proc nim*(self: Output, message: string, newline = true) =
-  self.write(message, self.nim, newline)
+proc nim*(self: Output, message: string) =
+  self.write(message, self.nim)
 
 
-proc promptMessage*(self: Output, message: string, newline = true) =
-  self.write(message, self.promptMessage, newline)
+proc promptMessage*(self: Output, message: string) =
+  self.write(message, self.promptMessage)
 
 
-proc promptSymbol*(self: Output, message: string, newline = true) =
-  self.write(message, self.promptSymbol, newline)
+proc promptSymbol*(self: Output, message: string) =
+  self.write(message, self.promptSymbol)
 
 
-proc okResult*(self: Output, message: string, newline = true) =
-  self.write(message, self.okResult, newline)
+proc okResult*(self: Output, message: string) =
+  self.write(message, self.okResult)
 
 
-proc info*(self: Output, message: string, newline = true) =
-  self.write(message, self.info, newline)
+proc info*(self: Output, message: string) =
+  self.write(message, self.info)
 
 
-proc warning*(self: Output, message: string, newline = true) =
-  self.write(message, self.warning, newline)
+proc warning*(self: Output, message: string) =
+  self.write(message, self.warning)
 
 
-proc error*(self: Output, message: string, newline = true) =
-  self.write(message, self.error, newline)
+proc error*(self: Output, message: string) =
+  self.write(message, self.error)
 
 
-proc unstyled*(self: Output, message: string, newline = true) =
-  self.write(message, colorScheme(), newline)
+proc unstyled*(self: Output, message: string) =
+  self.write(message, colorScheme())
 
 
 proc styledPrompt*(self: Output, message: string, symbol: string): Styler =

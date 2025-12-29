@@ -10,6 +10,7 @@ INim simulated the REPL behavior by re-running all the previous commands each ti
 - Command history support
 - Uses `nim` compiler in PATH, or a custom path. 
 - Can be configured through command line arguments or a configuration file.
+- Setup one or more pre-imported preludes.
 - Prints out value and type of expressions.
 - Runs in the current directory, `import` modules relative to the current directory.
 - Colorized output
@@ -18,7 +19,6 @@ INim simulated the REPL behavior by re-running all the previous commands each ti
 
 ### Planned features
 - Run on Linux, MacOS and Windows
-- Setup one or more pre-imported preludes.
 - Edit lines using `$EDITOR` (Ctrl-X)
 
 
@@ -36,3 +36,10 @@ INim simulated the REPL behavior by re-running all the previous commands each ti
  - **declarations**: shows all type and proc declarations
  - **quit**: quits reploid
  - **help**: show this help message
+
+
+## Limitations
+- **Compilation times**: since `reploid`'s vm uses `nim`'s compiler to compile commands and declarations it takes some time to run each. This could be mitigated by a faster compiler like `tcc`, but `tcc` has not yet implemented inline assembly for the `arm64` architecture, which is needed to compile `nim` on `MacOS`. Once `tcc` implements this, it will be integrated into `reploid`.
+
+- **Declared procs cannot access variable declarations**: due to how the vm lays out procs and variable declarations, they cannot be accessed from procs. This design decision was taken to avoid greater compilation times.
+

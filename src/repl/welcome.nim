@@ -16,15 +16,15 @@ type Welcome* = object
 proc reploidNameAndVersion(output: Output) =
   let prefix = when not defined(Windows): "👑 " else: ""
   let version = if NimblePkgVersion.len > 0: " v" & NimblePkgVersion else: ""
-  output.nim(prefix & "Reploid" & version)
+  output.nim(prefix & "Reploid" & version & "\n")
 
 
 proc nimVersion(output: Output, nim: string) =
   let (nimVersion, status) = execCmdEx(fmt"{nim} --version")
   if status == 0:
-    output.okResult(nimVersion.splitLines()[0])
+    output.okResult(nimVersion.splitLines()[0] & "\n")
   else:
-    output.error(fmt"'{nim}' compiler not found.")
+    output.error(fmt"'{nim}' compiler not found." & "\n")
 
 
 proc path(output: Output, nim: string) =
@@ -35,12 +35,12 @@ proc path(output: Output, nim: string) =
 
   let (path, status) = execCmdEx(whichCmd)
   if status == 0:
-    output.okResult("at " & path)
+    output.okResult("at " & path.strip() & "\n")
   else:
-    output.error("")
+    output.error("\n")
 
 
 proc welcome*(output: Output, nim: string) =
-  output.nim("┬─┐┌─┐┌─┐┬  ┌─┐┬┌┬┐ ", newline = false); output.reploidNameAndVersion()
-  output.nim("├┬┘├┤ ├─┘│  │ ││ ││ ", newline = false); output.nimVersion(nim)
-  output.nim("┴└─└─┘┴  ┴─┘└─┘┴─┴┘ ", newline = false); output.path(nim)
+  output.nim("┬─┐┌─┐┌─┐┬  ┌─┐┬┌┬┐ "); output.reploidNameAndVersion()
+  output.nim("├┬┘├┤ ├─┘│  │ ││ ││ "); output.nimVersion(nim)
+  output.nim("┴└─└─┘┴  ┴─┘└─┘┴─┴┘ "); output.path(nim)

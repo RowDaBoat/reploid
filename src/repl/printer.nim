@@ -16,6 +16,9 @@ proc formatError(error: string): string =
 
 
 proc printWithFormat(output: Output, lines: string, error: bool = false) =
+  if lines.len == 0:
+    return
+
   for line in lines.split("\n"):
     let errorStart = line.find(" Error: ")
     let warningStart = line.find(" Warning: ")
@@ -32,6 +35,8 @@ proc printWithFormat(output: Output, lines: string, error: bool = false) =
       output.error(line)
     else:
       output.okResult(line)
+
+    output.write("\n")
 
 
 proc newPrinter*(output: Output): Printer =
