@@ -4,9 +4,7 @@
 import strformat
 import os
 import tables
-
 import cliquet
-
 import sequtils
 import reploidvm/compiler
 import reploidvm/vm
@@ -29,6 +27,16 @@ type Configuration = object
   config  {.help: "Configuration file to use".}         : string
   history {.help: "History file to use".}               : string
   colors  {.help: "Display colors".}                    : bool
+  imports {.help: "Preload imports"}                    : seq[string]
+
+
+proc preloadImports(vm: var ReploidVM, imports: seq[string], output: Output) =
+  for toPreload in imports:
+    vm.declareImport(toPreload)
+
+  let updateResult = vm.updateImports()
+  if not updateResult.isSuccess:
+    output.error(fmt"Failed to preload imports: {updateResult[0]}")
 
 
 proc defaultConfig*(): Configuration =
@@ -75,6 +83,8 @@ proc reploid*(
   var evaluator = newEvaluator(commandsApi, commands, vm)
   var printer = newPrinter(output)
   var quit = false
+
+  vm.preloadImports(configuration.imports, output)
 
   while not quit:
     let input = reader.read()
