@@ -6,21 +6,24 @@ import os
 import tables
 import cliquet
 import sequtils
-import reploidvm/compiler
-import reploidvm/vm
-import repl/reader
-import repl/evaluator
-import repl/printer
+
 import repl/welcome
 import repl/styledoutput
+import reploidvm/compiler
+import reploidvm/vm
+export welcome, styledoutput, compiler, vm
+
+import repl/reader
+import repl/input
+import repl/evaluator
 import repl/evaluation
+import repl/printer
+export reader, input, evaluator, evaluation, printer
+
 import commands/commands
 import commands/source
 import commands/quit
-
-export commands
-export source
-export quit
+export commands, source, quit
 
 
 type Configuration* = object
