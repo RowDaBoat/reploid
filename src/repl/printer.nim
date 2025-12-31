@@ -28,15 +28,13 @@ proc printWithFormat(output: Output, lines: string, error: bool = false) =
     if notUsedStart != -1 or showIfTypedLine != -1:
       discard
     elif warningStart != -1:
-      output.warning(line[(warningStart + 1)..^1])
+      output.warning(line[(warningStart + 1)..^1] & "\n")
     elif errorStart != -1:
-      output.error(line[(errorStart + 1)..^1])
+      output.error(line[(errorStart + 1)..^1] & "\n")
     elif error:
-      output.error(line)
+      output.error(line & "\n")
     else:
-      output.okResult(line)
-
-    output.write("\n")
+      output.okResult(line & "\n")
 
 
 proc newPrinter*(output: Output): Printer =

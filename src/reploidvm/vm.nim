@@ -291,15 +291,20 @@ proc updateImports*(self: var ReploidVM): (string, int) =
   ## Compiles all declared imports and returns a success or an error.
   let imports = self.imports & self.newImports
   let source = imports.join("\n")
+  let checkSrcPath = self.importsPath & "check" & nimExt
+  let checkLibPath = self.importsPath & "check" & libExt
+
+  checkSrcPath.writeFile(source)
+  result = self.compiler.compileLibrary(checkSrcPath, checkLibPath)
+
+  if not result.isSuccess:
+    self.newImports = @[]
+    result[0] = result[0].strip()
+    return
+
   let srcPath = self.importsPath & nimExt
-  let libPath = self.importsPath & libExt
-
   srcPath.writeFile(source)
-  result = self.compiler.compileLibrary(srcPath, libPath)
-
-  if result.isSuccess:
-    self.imports.add(self.newImports)
-
+  self.imports.add(self.newImports)
   self.newImports = @[]
   result[0] = ""
 
@@ -309,15 +314,20 @@ proc updateDeclarations*(self: var ReploidVM): (string, int) =
   ## Compiles all declarations and returns a success or an error.
   let declarations = self.declarations & self.newDeclarations
   let source = declarations.join("\n\n")
+  let checkSrcPath = self.declarationsPath & "check" & nimExt
+  let checkLibPath = self.declarationsPath & "check" & libExt
+
+  checkSrcPath.writeFile(source)
+  result = self.compiler.compileLibrary(checkSrcPath, checkLibPath)
+
+  if not result.isSuccess:
+    self.newDeclarations = @[]
+    result[0] = result[0].strip()
+    return
+
   let srcPath = self.declarationsPath & nimExt
-  let libPath = self.declarationsPath & libExt
-
   srcPath.writeFile(source)
-  result = self.compiler.compileLibrary(srcPath, libPath)
-
-  if result.isSuccess:
-    self.declarations.add(self.newDeclarations)
-
+  self.declarations.add(self.newDeclarations)
   self.newDeclarations = @[]
   result[0] = ""
 
@@ -335,7 +345,8 @@ proc updateState*(self: var ReploidVM): (string, int) =
 
   if not result.isSuccess:
     self.newVariables = @[]
-    return result
+    result[0] = result[0].strip()
+    return
 
   self.inferTypes(result[0])
   let inferredVariables = self.variables & self.newVariables
@@ -373,7 +384,8 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
   result = self.compiler.compileLibrary(srcPath, libPath)
 
   if not result.isSuccess:
-    return result
+    result[0] = result[0].strip()
+    return
 
   let commandLib = loadLib(libPath)
 
