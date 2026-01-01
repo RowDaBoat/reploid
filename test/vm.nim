@@ -2,14 +2,14 @@
 # Copyright (c) 2025 RowDaBoat
 
 import unittest
-import ../src/reploidvm/vm
-import ../src/reploidvm/compiler
+import ../src/vm/vm
+import ../src/vm/compiler
 import strutils
 
-suite "Reploid VM should:":
+suite "Reploid's Virtual Machine should:":
   setup:
     let nim = newNimCompiler("nim", @[])
-    var vm = newReploidVM(nim)
+    var vm = newVm(nim)
     var result: (string, int)
 
   teardown:

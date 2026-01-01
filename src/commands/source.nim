@@ -3,7 +3,7 @@
 
 import commands
 import ../repl/evaluation
-import ../reploidvm/vm
+import ../vm/vm
 
 
 proc toSource(path: string): string =

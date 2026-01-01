@@ -1,2 +1,0 @@
-nimTitle	temple	reploidvm/temple.html	module src/reploidvm/temple		0
-nim	replace	reploidvm/temple.html#replace,string,varargs[]	proc replace(tmpl: string; replacements: varargs[(string, string)]): string		50

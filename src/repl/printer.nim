@@ -5,7 +5,7 @@ import styledoutput
 import evaluation
 import strutils
 import parser
-import ../reploidvm/vm
+import ../vm/vm
 
 
 type Printer* = object
@@ -112,7 +112,7 @@ proc printError(self: Printer, lines: string) =
     of Muted:   discard
 
 
-proc newPrinter*(output: Output, vm: ReploidVM): Printer =
+proc newPrinter*(output: Output, vm: Vm): Printer =
   ## Creates a new Printer object with the given output and vm.
   ## The vm is used to filter its temporary paths from the output.
   Printer(

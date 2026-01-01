@@ -2,7 +2,6 @@ nimTitle	input	repl/input.html	module src/repl/input		0
 nim	Lines	repl/input.html#Lines	InputKind.Lines		4
 nim	Reset	repl/input.html#Reset	InputKind.Reset		4
 nim	Quit	repl/input.html#Quit	InputKind.Quit		4
-nim	Editor	repl/input.html#Editor	InputKind.Editor		4
 nim	EOF	repl/input.html#EOF	InputKind.EOF		4
 nim	InputKind	repl/input.html#InputKind	enum InputKind		4
 nim	Input	repl/input.html#Input	object Input		7

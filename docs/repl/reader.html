@@ -130,8 +130,8 @@
   <dd>
     
     closes the reader, saving its history.
-    <a href="git@github.com:RowDaBoat/reploid.git/tree/version-2-2/src/repl/reader.nim#L164" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/reploid.git/edit/devel/src/repl/reader.nim#L164" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/reploid.git/tree/version-2-2/src/repl/reader.nim#L157" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/reploid.git/edit/devel/src/repl/reader.nim#L157" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -146,8 +146,8 @@
   <dd>
     
     Creates a new Reader object with the given properties. <tt class="docutils literal"><span class="pre"><span class="Identifier">output</span></span></tt> is used to output the prompt, which is composed by <tt class="docutils literal"><span class="pre"><span class="Identifier">promptMessage</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">promptSymbol</span></span></tt>, defaults to &quot;reploid&gt;&quot;. <tt class="docutils literal"><span class="pre"><span class="Identifier">indentation</span></span></tt> is used to auto-indent the lines, defaults to &quot;  &quot;. <tt class="docutils literal"><span class="pre"><span class="Identifier">historyFile</span></span></tt> is used to load and save the history, by default no history is saved or loaded.
-    <a href="git@github.com:RowDaBoat/reploid.git/tree/version-2-2/src/repl/reader.nim#L93" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/reploid.git/edit/devel/src/repl/reader.nim#L93" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/reploid.git/tree/version-2-2/src/repl/reader.nim#L87" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/reploid.git/edit/devel/src/repl/reader.nim#L87" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -155,7 +155,7 @@
 </div>
 <div id="read-procs-all">
   <div id="read,Reader">
-  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CReader"><span class="Identifier">read</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="reader.html#Reader"><span class="Identifier">Reader</span></a><span class="Other">)</span><span class="Other">:</span> <a href="input.html#Input"><span class="Identifier">Input</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">EOFError</span><span class="Other">,</span>
+  <dt><pre><span class="Keyword">proc</span> <a href="#read%2CReader"><span class="Identifier">read</span></a><span class="Other">(</span><span class="Identifier">self</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="reader.html#Reader"><span class="Identifier">Reader</span></a><span class="Other">)</span><span class="Other">:</span> <a href="input.html#Input"><span class="Identifier">Input</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">EOFError</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">,</span>
     <span class="Identifier">ValueError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">ReadEnvEffect</span><span class="Other">]</span><span class="Other">,</span>
                                      <span class="Identifier">forbids</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
   <dd>
@@ -164,14 +164,13 @@
 <p><strong>Indentation:</strong> The next line will be auto-indented when the current ends with one of: <tt class="docutils literal"><span class="pre"><span class="Punctuation">,</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Operator">=</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Punctuation">:</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">var</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">let</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">const</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">type</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">import</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">object</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Identifier">RootObj</span></span></tt>, <tt class="docutils literal"><span class="pre"><span class="Keyword">enum</span></span></tt> The next line will be un-indented when a line is left empty. The user's input is considered complete when a non-indented line is finished without triggering an auto-indent.</p>
 <p><strong>EOF and Signals:</strong></p>
 <ul class="simple"><li><tt class="docutils literal"><span class="pre"><span class="Identifier">Ctrl</span><span class="Operator">+</span><span class="Identifier">D</span></span></tt> is captured and returned as a <tt class="docutils literal"><span class="pre"><span class="Identifier">Quit</span></span></tt> input.</li>
-<li><tt class="docutils literal"><span class="pre"><span class="Identifier">Ctrl</span><span class="Operator">+</span><span class="Identifier">X</span></span></tt> is captured and returned as a <tt class="docutils literal"><span class="pre"><span class="Identifier">Editor</span></span></tt> input.</li>
 <li><tt class="docutils literal"><span class="pre"><span class="Identifier">Ctrl</span><span class="Operator">+</span><span class="Identifier">C</span></span></tt> is captured and returned as a <tt class="docutils literal"><span class="pre"><span class="Identifier">Reset</span></span></tt> input.</li>
 <li>An <tt class="docutils literal"><span class="pre"><span class="Identifier">EOF</span></span></tt> from <tt class="docutils literal"><span class="pre"><span class="Identifier">stdin</span></span></tt> is returned as an <tt class="docutils literal"><span class="pre"><span class="Identifier">EOF</span></span></tt> input.</li>
 </ul>
 <p><strong>History:</strong> Each line is added to the history file.</p>
 
-    <a href="git@github.com:RowDaBoat/reploid.git/tree/version-2-2/src/repl/reader.nim#L117" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
-<a href="git@github.com:RowDaBoat/reploid.git/edit/devel/src/repl/reader.nim#L117" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
+    <a href="git@github.com:RowDaBoat/reploid.git/tree/version-2-2/src/repl/reader.nim#L111" class="link-seesrc" target="_blank">Source</a>&nbsp;&nbsp;
+<a href="git@github.com:RowDaBoat/reploid.git/edit/devel/src/repl/reader.nim#L111" class="link-seesrc" target="_blank" >Edit</a>&nbsp;&nbsp;
 
   </dd>
 </div>
@@ -187,7 +186,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-12-30 21:20:15 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-01 18:26:58 UTC</small>
       </div>
     </div>
   </div>

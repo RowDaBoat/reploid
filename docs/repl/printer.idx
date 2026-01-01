@@ -1,4 +1,4 @@
 nimTitle	printer	repl/printer.html	module src/repl/printer		0
-nim	Printer	repl/printer.html#Printer	object Printer		9
-nim	newPrinter	repl/printer.html#newPrinter,Output	proc newPrinter(output: Output): Printer		42
-nim	print	repl/printer.html#print,Printer,Evaluation	proc print(self: Printer; evaluation: Evaluation)		47
+nim	Printer	repl/printer.html#Printer	object Printer		11
+nim	newPrinter	repl/printer.html#newPrinter,Output,Vm	proc newPrinter(output: Output; vm: Vm): Printer		115
+nim	print	repl/printer.html#print,Printer,Evaluation	proc print(self: Printer; evaluation: Evaluation)		135

@@ -1,0 +1,27 @@
+nimTitle	vm	vm/vm.html	module src/vm/vm		0
+nim	nimExt	vm/vm.html#nimExt	const nimExt		14
+nim	libExt	vm/vm.html#libExt	const libExt		15
+nim	Initialize	vm/vm.html#Initialize	type Initialize		34
+nim	Run	vm/vm.html#Run	type Run		35
+nim	Const	vm/vm.html#Const	DeclarerKind.Const		36
+nim	Let	vm/vm.html#Let	DeclarerKind.Let		36
+nim	Var	vm/vm.html#Var	DeclarerKind.Var		36
+nim	DeclarerKind	vm/vm.html#DeclarerKind	enum DeclarerKind		36
+nim	VariableDeclaration	vm/vm.html#VariableDeclaration	object VariableDeclaration		39
+nim	Vm	vm/vm.html#Vm	type Vm		49
+nim	newVm	vm/vm.html#newVm,Compiler,string	proc newVm(compiler: Compiler; tmpPath: string = getTempDir()): Vm		233
+nim	isSuccess	vm/vm.html#isSuccess	proc isSuccess(toCheck: (string, int)): bool		259
+nim	declareImport	vm/vm.html#declareImport,Vm,string	proc declareImport(self: var Vm; declaration: string)		264
+nim	declareVar	vm/vm.html#declareVar,Vm,DeclarerKind,string,string,string	proc declareVar(self: var Vm; declarer: DeclarerKind; name: string; typ: string = "";\n           initializer: string = "")		270
+nim	declare	vm/vm.html#declare,Vm,string	proc declare(self: var Vm; declaration: string)		286
+nim	updateImports	vm/vm.html#updateImports,Vm	proc updateImports(self: var Vm): (string, int)		292
+nim	updateDeclarations	vm/vm.html#updateDeclarations,Vm	proc updateDeclarations(self: var Vm): (string, int)		315
+nim	updateState	vm/vm.html#updateState,Vm	proc updateState(self: var Vm): (string, int)		338
+nim	runCommand	vm/vm.html#runCommand,Vm,string	proc runCommand(self: var Vm; command: string): (string, int)		379
+nim	importsPath	vm/vm.html#importsPath,Vm	proc importsPath(self: Vm): string		411
+nim	importsCheckPath	vm/vm.html#importsCheckPath,Vm	proc importsCheckPath(self: Vm): string		416
+nim	declarationsPath	vm/vm.html#declarationsPath,Vm	proc declarationsPath(self: Vm): string		421
+nim	declarationsCheckPath	vm/vm.html#declarationsCheckPath,Vm	proc declarationsCheckPath(self: Vm): string		426
+nim	commandPath	vm/vm.html#commandPath,Vm	proc commandPath(self: Vm): string		431
+nim	statePath	vm/vm.html#statePath,Vm	proc statePath(self: Vm): string		436
+nim	clean	vm/vm.html#clean,Vm	proc clean(self: var Vm)		441

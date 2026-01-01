@@ -1,4 +1,4 @@
 nimTitle	evaluator	repl/evaluator.html	module src/repl/evaluator		0
 nim	Evaluator	repl/evaluator.html#Evaluator	object Evaluator		13
-nim	newEvaluator	repl/evaluator.html#newEvaluator,CommandsApi,Table[string,Command],ReploidVM	proc newEvaluator(commandsApi: CommandsApi; commands: Table[string, Command];\n             vm: ReploidVM): Evaluator		176
-nim	eval	repl/evaluator.html#eval,Evaluator,Input	proc eval(self: var Evaluator; input: Input): Evaluation		192
+nim	newEvaluator	repl/evaluator.html#newEvaluator,CommandsApi,Table[string,Command],Vm	proc newEvaluator(commandsApi: CommandsApi; commands: Table[string, Command]; vm: Vm): Evaluator		180
+nim	eval	repl/evaluator.html#eval,Evaluator,Input	proc eval(self: var Evaluator; input: Input): Evaluation		196

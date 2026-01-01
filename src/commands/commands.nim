@@ -5,15 +5,15 @@ import tables
 import sequtils
 import strutils
 import ../repl/evaluation
-import ../reploidvm/compiler
-import ../reploidvm/vm
+import ../vm/compiler
+import ../vm/vm
 import ../repl/styledoutput
 
 
 type CommandsApi* = object
   output*: Output
   compiler*: Compiler
-  vm*: ReploidVM
+  vm*: Vm
 
 
 type CommandProc* = proc(api: var CommandsApi, args: seq[string]): Evaluation

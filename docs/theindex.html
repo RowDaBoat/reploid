@@ -25,10 +25,10 @@
   <div class="document" id="documentId">
     <div class="container">
       <h1 class="title">Index</h1>
-      Modules: <a href="commands/commands.html">commands/commands</a>, <a href="commands/quit.html">commands/quit</a>, <a href="commands/source.html">commands/source</a>, <a href="repl/evaluation.html">repl/evaluation</a>, <a href="repl/evaluator.html">repl/evaluator</a>, <a href="repl/input.html">repl/input</a>, <a href="repl/parser.html">repl/parser</a>, <a href="repl/printer.html">repl/printer</a>, <a href="repl/reader.html">repl/reader</a>, <a href="repl/styledoutput.html">repl/styledoutput</a>, <a href="repl/welcome.html">repl/welcome</a>, <a href="reploid.html">reploid</a>, <a href="reploidvm/compiler.html">reploidvm/compiler</a>, <a href="reploidvm/temple.html">reploidvm/temple</a>, <a href="reploidvm/vm.html">reploidvm/vm</a>.<br/><p /><h2>API symbols</h2>
+      Modules: <a href="commands/commands.html">commands/commands</a>, <a href="commands/quit.html">commands/quit</a>, <a href="commands/source.html">commands/source</a>, <a href="repl/evaluation.html">repl/evaluation</a>, <a href="repl/evaluator.html">repl/evaluator</a>, <a href="repl/input.html">repl/input</a>, <a href="repl/parser.html">repl/parser</a>, <a href="repl/printer.html">repl/printer</a>, <a href="repl/reader.html">repl/reader</a>, <a href="repl/styledoutput.html">repl/styledoutput</a>, <a href="repl/welcome.html">repl/welcome</a>, <a href="reploid.html">reploid</a>, <a href="vm/compiler.html">vm/compiler</a>, <a href="vm/temple.html">vm/temple</a>, <a href="vm/vm.html">vm/vm</a>.<br/><p /><h2>API symbols</h2>
 <dl><dt><a name="clean" href="#clean"><span>clean:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc clean(self: var ReploidVM)" href="reploidvm/vm.html#clean%2CReploidVM">vm: proc clean(self: var ReploidVM)</a></li>
+          data-doc-search-tag="vm: proc clean(self: var Vm)" href="vm/vm.html#clean%2CVm">vm: proc clean(self: var Vm)</a></li>
           </ul></dd>
 <dt><a name="close" href="#close"><span>close:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -52,6 +52,10 @@
 <li><a class="reference external"
           data-doc-search-tag="commands: proc command(name: string; help: string; run: CommandProc): Command" href="commands/commands.html#command%2Cstring%2Cstring%2CCommandProc">commands: proc command(name: string; help: string; run: CommandProc): Command</a></li>
           </ul></dd>
+<dt><a name="commandPath" href="#commandPath"><span>commandPath:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vm: proc commandPath(self: Vm): string" href="vm/vm.html#commandPath%2CVm">vm: proc commandPath(self: Vm): string</a></li>
+          </ul></dd>
 <dt><a name="CommandProc" href="#CommandProc"><span>CommandProc:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="commands: type CommandProc" href="commands/commands.html#CommandProc">commands: type CommandProc</a></li>
@@ -64,17 +68,13 @@
 <li><a class="reference external"
           data-doc-search-tag="commands: object CommandsApi" href="commands/commands.html#CommandsApi">commands: object CommandsApi</a></li>
           </ul></dd>
-<dt><a name="commandSource" href="#commandSource"><span>commandSource:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="vm: proc commandSource(self: ReploidVM): string" href="reploidvm/vm.html#commandSource%2CReploidVM">vm: proc commandSource(self: ReploidVM): string</a></li>
-          </ul></dd>
 <dt><a name="compileLibrary" href="#compileLibrary"><span>compileLibrary:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="compiler: proc compileLibrary(self: Compiler; source: string; output: string): (string, int)" href="reploidvm/compiler.html#compileLibrary%2CCompiler%2Cstring%2Cstring">compiler: proc compileLibrary(self: Compiler; source: string; output: string): (string, int)</a></li>
+          data-doc-search-tag="compiler: proc compileLibrary(self: Compiler; source: string; output: string): (string, int)" href="vm/compiler.html#compileLibrary%2CCompiler%2Cstring%2Cstring">compiler: proc compileLibrary(self: Compiler; source: string; output: string): (string, int)</a></li>
           </ul></dd>
 <dt><a name="Compiler" href="#Compiler"><span>Compiler:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="compiler: object Compiler" href="reploidvm/compiler.html#Compiler">compiler: object Compiler</a></li>
+          data-doc-search-tag="compiler: object Compiler" href="vm/compiler.html#Compiler">compiler: object Compiler</a></li>
           </ul></dd>
 <dt><a name="Configuration" href="#Configuration"><span>Configuration:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -82,33 +82,37 @@
           </ul></dd>
 <dt><a name="Const" href="#Const"><span>Const:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: DeclarerKind.Const" href="reploidvm/vm.html#Const">vm: DeclarerKind.Const</a></li>
+          data-doc-search-tag="vm: DeclarerKind.Const" href="vm/vm.html#Const">vm: DeclarerKind.Const</a></li>
           </ul></dd>
 <dt><a name="consumeSpaces" href="#consumeSpaces"><span>consumeSpaces:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="parser: proc consumeSpaces(self: Parser): Parser" href="repl/parser.html#consumeSpaces%2CParser">parser: proc consumeSpaces(self: Parser): Parser</a></li>
           </ul></dd>
-<dt><a name="declarationsSource" href="#declarationsSource"><span>declarationsSource:</span></a></dt><dd><ul class="simple">
+<dt><a name="declarationsCheckPath" href="#declarationsCheckPath"><span>declarationsCheckPath:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc declarationsSource(self: ReploidVM): string" href="reploidvm/vm.html#declarationsSource%2CReploidVM">vm: proc declarationsSource(self: ReploidVM): string</a></li>
+          data-doc-search-tag="vm: proc declarationsCheckPath(self: Vm): string" href="vm/vm.html#declarationsCheckPath%2CVm">vm: proc declarationsCheckPath(self: Vm): string</a></li>
+          </ul></dd>
+<dt><a name="declarationsPath" href="#declarationsPath"><span>declarationsPath:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vm: proc declarationsPath(self: Vm): string" href="vm/vm.html#declarationsPath%2CVm">vm: proc declarationsPath(self: Vm): string</a></li>
           </ul></dd>
 <dt><a name="declare" href="#declare"><span>declare:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc declare(self: var ReploidVM; declaration: string)" href="reploidvm/vm.html#declare%2CReploidVM%2Cstring">vm: proc declare(self: var ReploidVM; declaration: string)</a></li>
+          data-doc-search-tag="vm: proc declare(self: var Vm; declaration: string)" href="vm/vm.html#declare%2CVm%2Cstring">vm: proc declare(self: var Vm; declaration: string)</a></li>
           </ul></dd>
 <dt><a name="declareImport" href="#declareImport"><span>declareImport:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc declareImport(self: var ReploidVM; declaration: string)" href="reploidvm/vm.html#declareImport%2CReploidVM%2Cstring">vm: proc declareImport(self: var ReploidVM; declaration: string)</a></li>
+          data-doc-search-tag="vm: proc declareImport(self: var Vm; declaration: string)" href="vm/vm.html#declareImport%2CVm%2Cstring">vm: proc declareImport(self: var Vm; declaration: string)</a></li>
           </ul></dd>
 <dt><a name="DeclarerKind" href="#DeclarerKind"><span>DeclarerKind:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: enum DeclarerKind" href="reploidvm/vm.html#DeclarerKind">vm: enum DeclarerKind</a></li>
+          data-doc-search-tag="vm: enum DeclarerKind" href="vm/vm.html#DeclarerKind">vm: enum DeclarerKind</a></li>
           </ul></dd>
 <dt><a name="declareVar" href="#declareVar"><span>declareVar:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc declareVar(self: var ReploidVM; declarer: DeclarerKind; name: string;
-           typ: string = &quot;&quot;; initializer: string = &quot;&quot;)" href="reploidvm/vm.html#declareVar%2CReploidVM%2CDeclarerKind%2Cstring%2Cstring%2Cstring">vm: proc declareVar(self: var ReploidVM; declarer: DeclarerKind; name: string;
-           typ: string = &quot;&quot;; initializer: string = &quot;&quot;)</a></li>
+          data-doc-search-tag="vm: proc declareVar(self: var Vm; declarer: DeclarerKind; name: string; typ: string = &quot;&quot;;
+           initializer: string = &quot;&quot;)" href="vm/vm.html#declareVar%2CVm%2CDeclarerKind%2Cstring%2Cstring%2Cstring">vm: proc declareVar(self: var Vm; declarer: DeclarerKind; name: string; typ: string = &quot;&quot;;
+           initializer: string = &quot;&quot;)</a></li>
           </ul></dd>
 <dt><a name="defaultCommands" href="#defaultCommands"><span>defaultCommands:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -117,10 +121,6 @@
 <dt><a name="defaultConfig" href="#defaultConfig"><span>defaultConfig:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="reploid: proc defaultConfig(): Configuration" href="reploid.html#defaultConfig">reploid: proc defaultConfig(): Configuration</a></li>
-          </ul></dd>
-<dt><a name="Editor" href="#Editor"><span>Editor:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="input: InputKind.Editor" href="repl/input.html#Editor">input: InputKind.Editor</a></li>
           </ul></dd>
 <dt><a name="Empty" href="#Empty"><span>Empty:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -154,9 +154,13 @@
 <li><a class="reference external"
           data-doc-search-tag="evaluator: object Evaluator" href="repl/evaluator.html#Evaluator">evaluator: object Evaluator</a></li>
           </ul></dd>
-<dt><a name="importsSource" href="#importsSource"><span>importsSource:</span></a></dt><dd><ul class="simple">
+<dt><a name="importsCheckPath" href="#importsCheckPath"><span>importsCheckPath:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc importsSource(self: ReploidVM): string" href="reploidvm/vm.html#importsSource%2CReploidVM">vm: proc importsSource(self: ReploidVM): string</a></li>
+          data-doc-search-tag="vm: proc importsCheckPath(self: Vm): string" href="vm/vm.html#importsCheckPath%2CVm">vm: proc importsCheckPath(self: Vm): string</a></li>
+          </ul></dd>
+<dt><a name="importsPath" href="#importsPath"><span>importsPath:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vm: proc importsPath(self: Vm): string" href="vm/vm.html#importsPath%2CVm">vm: proc importsPath(self: Vm): string</a></li>
           </ul></dd>
 <dt><a name="info" href="#info"><span>info:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -164,7 +168,7 @@
           </ul></dd>
 <dt><a name="Initialize" href="#Initialize"><span>Initialize:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: type Initialize" href="reploidvm/vm.html#Initialize">vm: type Initialize</a></li>
+          data-doc-search-tag="vm: type Initialize" href="vm/vm.html#Initialize">vm: type Initialize</a></li>
           </ul></dd>
 <dt><a name="Input" href="#Input"><span>Input:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -176,19 +180,23 @@
           </ul></dd>
 <dt><a name="isSuccess" href="#isSuccess"><span>isSuccess:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc isSuccess(toCheck: (string, int)): bool" href="reploidvm/vm.html#isSuccess">vm: proc isSuccess(toCheck: (string, int)): bool</a></li>
+          data-doc-search-tag="vm: proc isSuccess(toCheck: (string, int)): bool" href="vm/vm.html#isSuccess">vm: proc isSuccess(toCheck: (string, int)): bool</a></li>
           </ul></dd>
 <dt><a name="Let" href="#Let"><span>Let:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: DeclarerKind.Let" href="reploidvm/vm.html#Let">vm: DeclarerKind.Let</a></li>
+          data-doc-search-tag="vm: DeclarerKind.Let" href="vm/vm.html#Let">vm: DeclarerKind.Let</a></li>
           </ul></dd>
 <dt><a name="libExt" href="#libExt"><span>libExt:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: const libExt" href="reploidvm/vm.html#libExt">vm: const libExt</a></li>
+          data-doc-search-tag="vm: const libExt" href="vm/vm.html#libExt">vm: const libExt</a></li>
           </ul></dd>
 <dt><a name="Lines" href="#Lines"><span>Lines:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="input: InputKind.Lines" href="repl/input.html#Lines">input: InputKind.Lines</a></li>
+          </ul></dd>
+<dt><a name="matchInteger" href="#matchInteger"><span>matchInteger:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="parser: proc matchInteger(self: Parser): Parser" href="repl/parser.html#matchInteger%2CParser">parser: proc matchInteger(self: Parser): Parser</a></li>
           </ul></dd>
 <dt><a name="matchKeywords" href="#matchKeywords"><span>matchKeywords:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -208,13 +216,11 @@
           </ul></dd>
 <dt><a name="newEvaluator" href="#newEvaluator"><span>newEvaluator:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="evaluator: proc newEvaluator(commandsApi: CommandsApi; commands: Table[string, Command];
-             vm: ReploidVM): Evaluator" href="repl/evaluator.html#newEvaluator%2CCommandsApi%2CTable%5Bstring%2CCommand%5D%2CReploidVM">evaluator: proc newEvaluator(commandsApi: CommandsApi; commands: Table[string, Command];
-             vm: ReploidVM): Evaluator</a></li>
+          data-doc-search-tag="evaluator: proc newEvaluator(commandsApi: CommandsApi; commands: Table[string, Command]; vm: Vm): Evaluator" href="repl/evaluator.html#newEvaluator%2CCommandsApi%2CTable%5Bstring%2CCommand%5D%2CVm">evaluator: proc newEvaluator(commandsApi: CommandsApi; commands: Table[string, Command]; vm: Vm): Evaluator</a></li>
           </ul></dd>
 <dt><a name="newNimCompiler" href="#newNimCompiler"><span>newNimCompiler:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="compiler: proc newNimCompiler(nim: string; flags: seq[string]): Compiler" href="reploidvm/compiler.html#newNimCompiler%2Cstring%2Cseq%5Bstring%5D">compiler: proc newNimCompiler(nim: string; flags: seq[string]): Compiler</a></li>
+          data-doc-search-tag="compiler: proc newNimCompiler(nim: string; flags: seq[string]): Compiler" href="vm/compiler.html#newNimCompiler%2Cstring%2Cseq%5Bstring%5D">compiler: proc newNimCompiler(nim: string; flags: seq[string]): Compiler</a></li>
           </ul></dd>
 <dt><a name="newOutput" href="#newOutput"><span>newOutput:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -234,7 +240,7 @@
           </ul></dd>
 <dt><a name="newPrinter" href="#newPrinter"><span>newPrinter:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="printer: proc newPrinter(output: Output): Printer" href="repl/printer.html#newPrinter%2COutput">printer: proc newPrinter(output: Output): Printer</a></li>
+          data-doc-search-tag="printer: proc newPrinter(output: Output; vm: Vm): Printer" href="repl/printer.html#newPrinter%2COutput%2CVm">printer: proc newPrinter(output: Output; vm: Vm): Printer</a></li>
           </ul></dd>
 <dt><a name="newReader" href="#newReader"><span>newReader:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -244,9 +250,9 @@
           promptSymbol: string = &quot;&gt;&quot;; indentation: string = &quot;  &quot;;
           historyFile: string = &quot;&quot;): Reader</a></li>
           </ul></dd>
-<dt><a name="newReploidVM" href="#newReploidVM"><span>newReploidVM:</span></a></dt><dd><ul class="simple">
+<dt><a name="newVm" href="#newVm"><span>newVm:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc newReploidVM(compiler: Compiler; tempPath: string = getTempDir()): ReploidVM" href="reploidvm/vm.html#newReploidVM%2CCompiler%2Cstring">vm: proc newReploidVM(compiler: Compiler; tempPath: string = getTempDir()): ReploidVM</a></li>
+          data-doc-search-tag="vm: proc newVm(compiler: Compiler; tmpPath: string = getTempDir()): Vm" href="vm/vm.html#newVm%2CCompiler%2Cstring">vm: proc newVm(compiler: Compiler; tmpPath: string = getTempDir()): Vm</a></li>
           </ul></dd>
 <dt><a name="nim" href="#nim"><span>nim:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -258,7 +264,7 @@
           </ul></dd>
 <dt><a name="nimExt" href="#nimExt"><span>nimExt:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: const nimExt" href="reploidvm/vm.html#nimExt">vm: const nimExt</a></li>
+          data-doc-search-tag="vm: const nimExt" href="vm/vm.html#nimExt">vm: const nimExt</a></li>
           </ul></dd>
 <dt><a name="okResult" href="#okResult"><span>okResult:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -278,7 +284,7 @@
           </ul></dd>
 <dt><a name="path" href="#path"><span>path:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="compiler: proc path(self: Compiler): (string, int)" href="reploidvm/compiler.html#path%2CCompiler">compiler: proc path(self: Compiler): (string, int)</a></li>
+          data-doc-search-tag="compiler: proc path(self: Compiler): (string, int)" href="vm/compiler.html#path%2CCompiler">compiler: proc path(self: Compiler): (string, int)</a></li>
           </ul></dd>
 <dt><a name="print" href="#print"><span>print:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -316,7 +322,7 @@
           </ul></dd>
 <dt><a name="replace" href="#replace"><span>replace:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="temple: proc replace(tmpl: string; replacements: varargs[(string, string)]): string" href="reploidvm/temple.html#replace%2Cstring%2Cvarargs%5B%5D">temple: proc replace(tmpl: string; replacements: varargs[(string, string)]): string</a></li>
+          data-doc-search-tag="temple: proc replace(tmpl: string; replacements: varargs[(string, string)]): string" href="vm/temple.html#replace%2Cstring%2Cvarargs%5B%5D">temple: proc replace(tmpl: string; replacements: varargs[(string, string)]): string</a></li>
           </ul></dd>
 <dt><a name="reploid" href="#reploid"><span>reploid:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -324,29 +330,25 @@
         commands: Table[string, Command] = defaultCommands())" href="reploid.html#reploid%2CConfiguration%2CTable%5Bstring%2CCommand%5D">reploid: proc reploid(configuration: Configuration = defaultConfig();
         commands: Table[string, Command] = defaultCommands())</a></li>
           </ul></dd>
-<dt><a name="ReploidVM" href="#ReploidVM"><span>ReploidVM:</span></a></dt><dd><ul class="simple">
-<li><a class="reference external"
-          data-doc-search-tag="vm: object ReploidVM" href="reploidvm/vm.html#ReploidVM">vm: object ReploidVM</a></li>
-          </ul></dd>
 <dt><a name="Reset" href="#Reset"><span>Reset:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="input: InputKind.Reset" href="repl/input.html#Reset">input: InputKind.Reset</a></li>
           </ul></dd>
 <dt><a name="Run" href="#Run"><span>Run:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: type Run" href="reploidvm/vm.html#Run">vm: type Run</a></li>
+          data-doc-search-tag="vm: type Run" href="vm/vm.html#Run">vm: type Run</a></li>
           </ul></dd>
 <dt><a name="runCommand" href="#runCommand"><span>runCommand:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc runCommand(self: var ReploidVM; command: string): (string, int)" href="reploidvm/vm.html#runCommand%2CReploidVM%2Cstring">vm: proc runCommand(self: var ReploidVM; command: string): (string, int)</a></li>
+          data-doc-search-tag="vm: proc runCommand(self: var Vm; command: string): (string, int)" href="vm/vm.html#runCommand%2CVm%2Cstring">vm: proc runCommand(self: var Vm; command: string): (string, int)</a></li>
           </ul></dd>
 <dt><a name="sourceCmd" href="#sourceCmd"><span>sourceCmd:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="source: proc sourceCmd(commandsApi: var CommandsApi; args: seq[string]): Evaluation" href="commands/source.html#sourceCmd%2CCommandsApi%2Cseq%5Bstring%5D">source: proc sourceCmd(commandsApi: var CommandsApi; args: seq[string]): Evaluation</a></li>
           </ul></dd>
-<dt><a name="stateSource" href="#stateSource"><span>stateSource:</span></a></dt><dd><ul class="simple">
+<dt><a name="statePath" href="#statePath"><span>statePath:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc stateSource(self: ReploidVM): string" href="reploidvm/vm.html#stateSource%2CReploidVM">vm: proc stateSource(self: ReploidVM): string</a></li>
+          data-doc-search-tag="vm: proc statePath(self: Vm): string" href="vm/vm.html#statePath%2CVm">vm: proc statePath(self: Vm): string</a></li>
           </ul></dd>
 <dt><a name="styledPrompt" href="#styledPrompt"><span>styledPrompt:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -362,27 +364,31 @@
           </ul></dd>
 <dt><a name="updateDeclarations" href="#updateDeclarations"><span>updateDeclarations:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc updateDeclarations(self: var ReploidVM): (string, int)" href="reploidvm/vm.html#updateDeclarations%2CReploidVM">vm: proc updateDeclarations(self: var ReploidVM): (string, int)</a></li>
+          data-doc-search-tag="vm: proc updateDeclarations(self: var Vm): (string, int)" href="vm/vm.html#updateDeclarations%2CVm">vm: proc updateDeclarations(self: var Vm): (string, int)</a></li>
           </ul></dd>
 <dt><a name="updateImports" href="#updateImports"><span>updateImports:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc updateImports(self: var ReploidVM): (string, int)" href="reploidvm/vm.html#updateImports%2CReploidVM">vm: proc updateImports(self: var ReploidVM): (string, int)</a></li>
+          data-doc-search-tag="vm: proc updateImports(self: var Vm): (string, int)" href="vm/vm.html#updateImports%2CVm">vm: proc updateImports(self: var Vm): (string, int)</a></li>
           </ul></dd>
 <dt><a name="updateState" href="#updateState"><span>updateState:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: proc updateState(self: var ReploidVM): (string, int)" href="reploidvm/vm.html#updateState%2CReploidVM">vm: proc updateState(self: var ReploidVM): (string, int)</a></li>
+          data-doc-search-tag="vm: proc updateState(self: var Vm): (string, int)" href="vm/vm.html#updateState%2CVm">vm: proc updateState(self: var Vm): (string, int)</a></li>
           </ul></dd>
 <dt><a name="Var" href="#Var"><span>Var:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: DeclarerKind.Var" href="reploidvm/vm.html#Var">vm: DeclarerKind.Var</a></li>
+          data-doc-search-tag="vm: DeclarerKind.Var" href="vm/vm.html#Var">vm: DeclarerKind.Var</a></li>
           </ul></dd>
 <dt><a name="VariableDeclaration" href="#VariableDeclaration"><span>VariableDeclaration:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="vm: object VariableDeclaration" href="reploidvm/vm.html#VariableDeclaration">vm: object VariableDeclaration</a></li>
+          data-doc-search-tag="vm: object VariableDeclaration" href="vm/vm.html#VariableDeclaration">vm: object VariableDeclaration</a></li>
           </ul></dd>
 <dt><a name="version" href="#version"><span>version:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="compiler: proc version(self: Compiler): (string, int)" href="reploidvm/compiler.html#version%2CCompiler">compiler: proc version(self: Compiler): (string, int)</a></li>
+          data-doc-search-tag="compiler: proc version(self: Compiler): (string, int)" href="vm/compiler.html#version%2CCompiler">compiler: proc version(self: Compiler): (string, int)</a></li>
+          </ul></dd>
+<dt><a name="Vm" href="#Vm"><span>Vm:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="vm: type Vm" href="vm/vm.html#Vm">vm: type Vm</a></li>
           </ul></dd>
 <dt><a name="warning" href="#warning"><span>warning:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -404,7 +410,7 @@
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2025-12-30 21:20:15 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2026-01-01 18:26:58 UTC</small>
       </div>
     </div>
   </div>

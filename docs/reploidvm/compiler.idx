@@ -1,6 +1,0 @@
-nimTitle	compiler	reploidvm/compiler.html	module src/reploidvm/compiler		0
-nim	Compiler	reploidvm/compiler.html#Compiler	object Compiler		10
-nim	newNimCompiler	reploidvm/compiler.html#newNimCompiler,string,seq[string]	proc newNimCompiler(nim: string; flags: seq[string]): Compiler		27
-nim	version	reploidvm/compiler.html#version,Compiler	proc version(self: Compiler): (string, int)		33
-nim	path	reploidvm/compiler.html#path,Compiler	proc path(self: Compiler): (string, int)		38
-nim	compileLibrary	reploidvm/compiler.html#compileLibrary,Compiler,string,string	proc compileLibrary(self: Compiler; source: string; output: string): (string, int)		48

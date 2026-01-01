@@ -1,2 +1,2 @@
 nimTitle	source	commands/source.html	module src/commands/source		0
-nim	sourceCmd	commands/source.html#sourceCmd,CommandsApi,seq[string]	proc sourceCmd(commandsApi: var CommandsApi; args: seq[string]): Evaluation		9
+nim	sourceCmd	commands/source.html#sourceCmd,CommandsApi,seq[string]	proc sourceCmd(commandsApi: var CommandsApi; args: seq[string]): Evaluation		14

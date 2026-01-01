@@ -15,7 +15,11 @@ requires "https://github.com/RowDaBoat/cliquet.git#master"
 requires "https://github.com/jangko/nim-noise.git#master"
 
 task test, "Run the test suite":
-  exec "nim r test/reploidvm.nim"
+  exec "nim r test/vm.nim"
 
 task docs, "Generate documentation":
+  when defined(windows):
+    exec "rmdir /S /Q docs"
+  else:
+    exec "rm -rf docs"
   exec "nim doc --project --git.url:git@github.com:RowDaBoat/reploid.git --index:on --outdir:docs src/reploid.nim"

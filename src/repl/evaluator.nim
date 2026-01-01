@@ -6,14 +6,14 @@ import tables
 import input
 import evaluation
 import parser
-import ../reploidvm/vm
+import ../vm/vm
 import ../commands/commands
 
 
 type Evaluator* = object
   commandsApi: CommandsApi
   commands: Table[string, Command]
-  vm: ReploidVM
+  vm: Vm
 
 
 proc isEmpty(lines: string): bool =
@@ -180,7 +180,7 @@ proc evaluateLines(self: var Evaluator, lines: string): Evaluation =
 proc newEvaluator*(
   commandsApi: CommandsApi,
   commands: Table[string, Command],
-  vm: ReploidVM
+  vm: Vm
 ): Evaluator =
   ## Creates a new Evaluator object with the given commands and VM.
   ## 
@@ -188,8 +188,8 @@ proc newEvaluator*(
   ## `commands` is a table associating built-in command names with their implementations.
   ## The `commandsApi` object contains the output, compiler and vm exposed to each command.
   ## 
-  ## **ReploidVM:**
-  ## `vm` is the ReploidVM object that contains the state, declarations, imports, and runs nim code.
+  ## **Vm:**
+  ## `vm` is the Vm object that contains the state, declarations, imports, and runs nim code.
   Evaluator(commandsApi: commandsApi, vm: vm, commands: commands)
 
 

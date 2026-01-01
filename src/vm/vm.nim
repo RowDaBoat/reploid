@@ -46,7 +46,7 @@ type VariableDeclaration* = object
 var stateId: int = 0
 var commandId: int = 0
 
-type ReploidVM* = ref object
+type Vm* = ref object
   stateTemplate: string
   commandTemplate: string
   varDeclarationTemplate: string
@@ -84,7 +84,7 @@ proc `$`(self: DeclarerKind): string =
   of DeclarerKind.Var: "var"
 
 
-proc varDeclaration(self: ReploidVM, variable: VariableDeclaration): string =
+proc varDeclaration(self: Vm, variable: VariableDeclaration): string =
   self.varDeclarationTemplate.replace(
     ("declarer", $variable.declarer),
     ("name", variable.name),
@@ -93,21 +93,21 @@ proc varDeclaration(self: ReploidVM, variable: VariableDeclaration): string =
   )
 
 
-proc getAccessor(self: ReploidVM, variable: VariableDeclaration): string =
+proc getAccessor(self: Vm, variable: VariableDeclaration): string =
   fmt"genGetter({variable.name}, typeof({variable.name}))"
 
 
-proc setAccessor(self: ReploidVM, variable: VariableDeclaration): string =
+proc setAccessor(self: Vm, variable: VariableDeclaration): string =
   fmt"genSetter({variable.name}, typeof({variable.name}))"
 
 
-proc accessors(self: ReploidVM, variable: VariableDeclaration): string =
+proc accessors(self: Vm, variable: VariableDeclaration): string =
     result = self.getAccessor(variable)
 
     if variable.declarer == DeclarerKind.Var:
       result &= "\n" & self.setAccessor(variable)
 
-proc loadOldGetAccessor(self: ReploidVM, variable: VariableDeclaration): string =
+proc loadOldGetAccessor(self: Vm, variable: VariableDeclaration): string =
   self.getAccessorSymbolTemplate.replace(
     ("casedBindingName", "Old" & variable.name.cased),
     ("casedSymbolName", variable.name.cased),
@@ -116,14 +116,14 @@ proc loadOldGetAccessor(self: ReploidVM, variable: VariableDeclaration): string 
   )
 
 
-proc stateUpdater(self: ReploidVM, variable: VariableDeclaration): string =
+proc stateUpdater(self: Vm, variable: VariableDeclaration): string =
   self.stateUpdaterTemplate.replace(
     ("toGet", "Old" & variable.name.cased),
     ("toSet", variable.name)
   )
 
 
-proc loadGetAccessor(self: ReploidVM, variable: VariableDeclaration): string =
+proc loadGetAccessor(self: Vm, variable: VariableDeclaration): string =
   self.getAccessorSymbolTemplate.replace(
     ("casedBindingName", variable.name.cased),
     ("casedSymbolName", variable.name.cased),
@@ -132,7 +132,7 @@ proc loadGetAccessor(self: ReploidVM, variable: VariableDeclaration): string =
   )
 
 
-proc loadSetAccessor(self: ReploidVM, variable: VariableDeclaration): string =
+proc loadSetAccessor(self: Vm, variable: VariableDeclaration): string =
   self.setAccessorSymbolTemplate.replace(
     ("casedBindingName", variable.name.cased),
     ("casedSymbolName", variable.name.cased),
@@ -141,7 +141,7 @@ proc loadSetAccessor(self: ReploidVM, variable: VariableDeclaration): string =
   )
 
 
-proc loadState(self: ReploidVM, variable: VariableDeclaration): string =
+proc loadState(self: Vm, variable: VariableDeclaration): string =
   self.loadStateTemplate.replace(
     ("declarer", if variable.declarer == DeclarerKind.Var: "var" else: "let"),
     ("bindingName", variable.name),
@@ -149,14 +149,14 @@ proc loadState(self: ReploidVM, variable: VariableDeclaration): string =
   )
 
 
-proc saveState(self: ReploidVM, variable: VariableDeclaration): string =
+proc saveState(self: Vm, variable: VariableDeclaration): string =
   self.saveStateTemplate.replace(
     ("bindingName", variable.name),
     ("casedSymbolName", variable.name.cased),
   )
 
 
-proc generateStateSource(self: ReploidVM, variables: seq[VariableDeclaration]): string =
+proc generateStateSource(self: Vm, variables: seq[VariableDeclaration]): string =
   let oldVariables = self.variables
 
   let variableDeclarations = variables
@@ -185,7 +185,7 @@ proc generateStateSource(self: ReploidVM, variables: seq[VariableDeclaration]): 
   )
 
 
-proc generateCommandSource(self: ReploidVM, command: string): string =
+proc generateCommandSource(self: Vm, command: string): string =
   let variables = self.variables
 
   let loadGetAccessors = variables
@@ -215,7 +215,7 @@ proc generateCommandSource(self: ReploidVM, command: string): string =
   )
 
 
-proc inferTypes(self: var ReploidVM, output: string) =
+proc inferTypes(self: var Vm, output: string) =
   const tag = ":reploid var decl:"
   let varTypes = output.splitLines()
     .mapIt((it.find(tag), it))
@@ -230,9 +230,9 @@ proc inferTypes(self: var ReploidVM, output: string) =
       self.newVariables[i].typ = varTypes[self.newVariables[i].name]
 
 
-proc newReploidVM*(compiler: Compiler, tmpPath: string = getTempDir()): ReploidVM =
-  ## Creates a new ReploidVM with the given compiler and temporary path.
-  result = ReploidVM(
+proc newVm*(compiler: Compiler, tmpPath: string = getTempDir()): Vm =
+  ## Creates a new Virtual Machine with the given compiler and temporary path.
+  result = Vm(
     compiler: compiler,
 
     stateTemplate: stateTemplate,
@@ -261,13 +261,13 @@ proc isSuccess*(toCheck: (string, int)): bool =
   toCheck[1] == 0
 
 
-proc declareImport*(self: var ReploidVM, declaration: string) =
+proc declareImport*(self: var Vm, declaration: string) =
   ## Declares a new import.
   ## This will not be effective until `updateImports` is called.
   self.newImports.add("import " & declaration)
 
 
-proc declareVar*(self: var ReploidVM, declarer: DeclarerKind, name: string, typ: string = "", initializer: string = "") =
+proc declareVar*(self: var Vm, declarer: DeclarerKind, name: string, typ: string = "", initializer: string = "") =
   ## Declares a new variable.
   ## This will not be effective until `updateState` is called.
   ## `declarer`: declarer of the variable, corresponding to `const`, `let` or `var`.
@@ -283,13 +283,13 @@ proc declareVar*(self: var ReploidVM, declarer: DeclarerKind, name: string, typ:
   self.newVariables.add(declaration)
 
 
-proc declare*(self: var ReploidVM, declaration: string) =
+proc declare*(self: var Vm, declaration: string) =
   ## Declares a new `proc`, `template`, `macro`, `iterator`, etc. and/or `type`.
   ## This will not be effective until `updateDeclarations` is called.
   self.newDeclarations.add(declaration)
 
 
-proc updateImports*(self: var ReploidVM): (string, int) =
+proc updateImports*(self: var Vm): (string, int) =
   ## Updates the imports.
   ## Compiles all declared imports and returns a success or an error.
   let imports = self.imports & self.newImports
@@ -312,7 +312,7 @@ proc updateImports*(self: var ReploidVM): (string, int) =
   result[0] = ""
 
 
-proc updateDeclarations*(self: var ReploidVM): (string, int) =
+proc updateDeclarations*(self: var Vm): (string, int) =
   ## Updates the declarations.
   ## Compiles all declarations and returns a success or an error.
   let declarations = self.declarations & self.newDeclarations
@@ -335,7 +335,7 @@ proc updateDeclarations*(self: var ReploidVM): (string, int) =
   result[0] = ""
 
 
-proc updateState*(self: var ReploidVM): (string, int) =
+proc updateState*(self: var Vm): (string, int) =
   ## Updates the state's structure, initializes the new variables while keeping the values of the previous state.
   ## Compiles all variable declarations, and returns a success or an error.
   let newVariables = self.variables & self.newVariables
@@ -376,7 +376,7 @@ proc updateState*(self: var ReploidVM): (string, int) =
   result[0] = ""
 
 
-proc runCommand*(self: var ReploidVM, command: string): (string, int) =
+proc runCommand*(self: var Vm, command: string): (string, int) =
   ## Runs a command.
   ## Compiles the command, runs it, and returns a success or an error.
   let srcPath = self.commandBasePath & nimExt
@@ -408,37 +408,37 @@ proc runCommand*(self: var ReploidVM, command: string): (string, int) =
   unloadLib(commandLib)
 
 
-proc importsPath*(self: ReploidVM): string =
+proc importsPath*(self: Vm): string =
   ## Temporary path where the vm stores its imports.
   self.importsBasePath & nimExt
 
 
-proc importsCheckPath*(self: ReploidVM): string =
+proc importsCheckPath*(self: Vm): string =
   ## Temporary path where the vm writes the last imports that were validated.
   self.importsBasePath & checkSuffix & nimExt
 
 
-proc declarationsPath*(self: ReploidVM): string =
+proc declarationsPath*(self: Vm): string =
   ## Temporary path where the vm stores its declarations.
   self.declarationsBasePath & nimExt
 
 
-proc declarationsCheckPath*(self: ReploidVM): string =
+proc declarationsCheckPath*(self: Vm): string =
   ## Temporary path where the vm writes the last declarations that were validated.
   self.declarationsBasePath & checkSuffix & nimExt
 
 
-proc commandPath*(self: ReploidVM): string =
+proc commandPath*(self: Vm): string =
   ## Temporary path where the vm stored the last command.
   self.commandBasePath & nimExt
 
 
-proc statePath*(self: ReploidVM): string =
+proc statePath*(self: Vm): string =
   ## Temporary path where the vm stored the last state.
   self.stateBasePath & nimExt
 
 
-proc clean*(self: var ReploidVM) =
+proc clean*(self: var Vm) =
   ## Cleans up the vm, unloading all state libraries.
   for state in self.states:
     unloadLib(state)

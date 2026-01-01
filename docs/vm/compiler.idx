@@ -1,0 +1,6 @@
+nimTitle	compiler	vm/compiler.html	module src/vm/compiler		0
+nim	Compiler	vm/compiler.html#Compiler	object Compiler		10
+nim	newNimCompiler	vm/compiler.html#newNimCompiler,string,seq[string]	proc newNimCompiler(nim: string; flags: seq[string]): Compiler		27
+nim	version	vm/compiler.html#version,Compiler	proc version(self: Compiler): (string, int)		33
+nim	path	vm/compiler.html#path,Compiler	proc path(self: Compiler): (string, int)		38
+nim	compileLibrary	vm/compiler.html#compileLibrary,Compiler,string,string	proc compileLibrary(self: Compiler; source: string; output: string): (string, int)		48

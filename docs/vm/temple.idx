@@ -1,0 +1,2 @@
+nimTitle	temple	vm/temple.html	module src/vm/temple		0
+nim	replace	vm/temple.html#replace,string,varargs[]	proc replace(tmpl: string; replacements: varargs[(string, string)]): string		50

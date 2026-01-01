@@ -1,5 +1,5 @@
 nimTitle	reader	repl/reader.html	module src/repl/reader		0
 nim	Reader	repl/reader.html#Reader	object Reader		10
-nim	newReader	repl/reader.html#newReader,Output,string,string,string,string	proc newReader(output: Output; promptMessage: string = "reploid";\n          promptSymbol: string = ">"; indentation: string = "  ";\n          historyFile: string = ""): Reader		93
-nim	read	repl/reader.html#read,Reader	proc read(self: var Reader): Input		117
-nim	close	repl/reader.html#close,Reader	proc close(self: var Reader)		164
+nim	newReader	repl/reader.html#newReader,Output,string,string,string,string	proc newReader(output: Output; promptMessage: string = "reploid";\n          promptSymbol: string = ">"; indentation: string = "  ";\n          historyFile: string = ""): Reader		87
+nim	read	repl/reader.html#read,Reader	proc read(self: var Reader): Input		111
+nim	close	repl/reader.html#close,Reader	proc close(self: var Reader)		157

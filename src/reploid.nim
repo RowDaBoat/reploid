@@ -9,8 +9,8 @@ import sequtils
 
 import repl/welcome
 import repl/styledoutput
-import reploidvm/compiler
-import reploidvm/vm
+import vm/compiler
+import vm/vm
 export welcome, styledoutput, compiler, vm
 
 import repl/reader
@@ -37,7 +37,7 @@ type Configuration* = object
   imports {.help: "Preload imports"}                    : seq[string]
 
 
-proc preloadImports(vm: var ReploidVM, imports: seq[string], output: Output) =
+proc preloadImports(vm: var Vm, imports: seq[string], output: Output) =
   for toPreload in imports:
     vm.declareImport(toPreload)
 
@@ -83,7 +83,7 @@ proc reploid*(
     output.error(fmt"Error: '{configuration.nim}' not found, make sure '{configuration.nim}' is in PATH")
     return
 
-  var vm = newReploidVM(compiler)
+  var vm = newVm(compiler)
 
   var commandsApi = CommandsApi(
     output: output,
