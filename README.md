@@ -5,7 +5,7 @@ Reploid is a Nim REPL originally forked from [INim](https://github.com/inim-repl
 INim simulated the REPL behavior by re-running all the previous commands each time, and hiding the output of previous commands. Reploid instead runs each command just once by using its own virtual machine to keep track of the state.
 
 
-![Reploid Showcase](docs/reploid.png)
+![Reploid Showcase](reploid.png)
 
 ## Features
 
