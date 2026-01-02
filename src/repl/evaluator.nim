@@ -153,6 +153,7 @@ proc processOtherDeclaration(self: var Evaluator, lines: string, evaluation: var
 
 proc processRunCommand(self: var Evaluator, lines: string): Evaluation =
   let runResult = self.vm.runCommand(lines)
+
   return Evaluation(
     kind: if runResult.isSuccess: Success else: Error,
     result: runResult[0]

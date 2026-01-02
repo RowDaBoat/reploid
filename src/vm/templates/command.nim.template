@@ -16,7 +16,7 @@ template showIfTyped(body: untyped): string =
       "'" & $value & "'" & " type: " & $typeof(value)
 
 
-proc run*(stateLib: LibHandle): string {.exportc, dynlib, stdcall.} =
+proc run*(stateLib: LibHandle): (string, string) {.exportc, dynlib, stdcall.} =
   # Load Get Accessors
   {loadGetAccessors}
 
@@ -27,8 +27,11 @@ proc run*(stateLib: LibHandle): string {.exportc, dynlib, stdcall.} =
   {loadState}
 
   # Command
-  result = showIfTyped:
-    {command}
+  try:
+    result[0] = showIfTyped:
+      {command}
+  except Exception as error:
+    result[1] = error.msg
 
   # Save State
   {saveState}

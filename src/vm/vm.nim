@@ -32,7 +32,7 @@ const saveStateTemplate =         staticRead(templatesPath/"savestate" & templat
 
 
 type Initialize* = proc(oldStateLib: pointer) {.stdcall.}
-type Run* = proc(state: pointer): string {.stdcall.}
+type Run* = proc(state: pointer): (string, string) {.stdcall.}
 type DeclarerKind* = enum Const, Let, Var
 
 
@@ -403,7 +403,12 @@ proc runCommand*(self: var Vm, command: string): (string, int) =
 
   block:
     let run = cast[Run](runPointer)
-    result[0] = "" & run(if self.states.len == 0: nil else: self.states[^1])
+    let (output, error) = run(if self.states.len == 0: nil else: self.states[^1])
+
+    if error.len == 0:
+      result = (output, 0)
+    else:
+      result = (error, 1)
 
   unloadLib(commandLib)
 
