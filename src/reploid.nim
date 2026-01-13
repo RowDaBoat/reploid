@@ -7,8 +7,8 @@ import cliquet
 import repl/[welcome, styledoutput, reader, input, evaluator, evaluation, printer, commands]
 export welcome, styledoutput, reader, input, evaluator, evaluation, printer, commands
 
-import vm/[compiler, vm]
-export compiler, vm
+import vm/[compiler, nimcvm, vm]
+export compiler, nimcvm, vm
 
 
 type Configuration* = object
@@ -22,7 +22,7 @@ type Configuration* = object
   imports {.help: "Preload imports"}                    : seq[string]
 
 
-proc preloadImports(vm: var Vm, imports: seq[string], output: Output) =
+proc preloadImports(vm: Vm, imports: seq[string], output: Output) =
   for toPreload in imports:
     vm.declareImport(toPreload)
 
@@ -68,7 +68,7 @@ proc reploid*(
     output.error(fmt"Error: '{configuration.nim}' not found, make sure '{configuration.nim}' is in PATH")
     return
 
-  var vm = newVm(compiler)
+  var vm = newNimCVm(compiler)
 
   var commandsApi = CommandsApi(
     output: output,

@@ -3,13 +3,14 @@
 
 import unittest
 import ../src/vm/vm
+import ../src/vm/nimcvm
 import ../src/vm/compiler
 import strutils
 
-suite "Reploid's Virtual Machine should:":
+suite "Reploid's Nim Compiler Virtual Machine should:":
   setup:
     let nim = newNimCompiler("nim", @[])
-    var vm = newVm(nim)
+    var vm = newNimCVm(nim)
     var result: (string, int)
 
   teardown:
