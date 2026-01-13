@@ -36,7 +36,7 @@ INim simulated the REPL behavior by re-running all the previous commands each ti
 - **colors**: enabel/disable colors, enabled by default
 - **help**: show the help message
 
-## Built-in commands
+### Built-in commands
  - **imports**: shows all imports
  - **declarations**: shows all type and proc declarations
  - **quit**: quits reploid
@@ -60,6 +60,13 @@ The full API reference is available [here](https://rowdaboat.github.io/reploid/r
 
 
 ## Limitations
-- **Compilation times**: since `reploid`'s vm uses `nim`'s compiler to compile commands and declarations it takes some time to run each. This could be mitigated by a faster compiler like `tcc`, but `tcc` has not yet implemented inline assembly for the `arm64` architecture, which is needed to compile `nim` on `MacOS`. Once `tcc` implements this, it will be integrated into `reploid`.
+- **Compilation times**: since `reploid`'s vm uses the `nim` compiler to compile commands and declarations it takes some time to run each. This could be mitigated by a faster compiler like `tcc`, but `tcc` has not yet implemented inline assembly for the `arm64` architecture, which is needed to compile `nim` on `MacOS`. Once `tcc` implements this, it will be integrated into `reploid`.
 
 - **Declared procs cannot access variable declarations**: due to how the vm lays out procs and variable declarations, they cannot be accessed from procs. This design decision was taken to avoid greater compilation times.
+
+
+## Roadmap
+- Faster but less compatible VM using `nimscripter`
+- save/load program commands
+- save/load state commands
+- Shell commands
