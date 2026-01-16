@@ -7,8 +7,10 @@ import cliquet
 import repl/[welcome, styledoutput, reader, input, evaluator, evaluation, printer, commands]
 export welcome, styledoutput, reader, input, evaluator, evaluation, printer, commands
 
-import vm/[compiler, nimcvm, vm]
-export compiler, nimcvm, vm
+import vm/[compiler, vm, nimcvm, nimsvm]
+export compiler, vm, nimcvm, nimsvm
+
+type VmImplementation* = enum nimc, nims
 
 
 type Configuration* = object
@@ -19,7 +21,10 @@ type Configuration* = object
   config  {.help: "Configuration file to use".}         : string
   history {.help: "History file to use".}               : string
   colors  {.help: "Display colors".}                    : bool
+  output  {.help: "Display a clean or full output.".}   : OutputDisplay
   imports {.help: "Preload imports"}                    : seq[string]
+  vm      {.help: "Virtual Machine to use. Use 'nimc' for compatibility, use 'nims' for speed.".}
+                                                        : VmImplementation
 
 
 proc preloadImports(vm: Vm, imports: seq[string], output: Output) =
@@ -41,6 +46,8 @@ proc defaultConfig*(): Configuration =
     config: reploidDir/"config",
     history: reploidDir/"history",
     colors: true,
+    output: OutputDisplay.clean,
+    vm: VmImplementation.nimc,
     help: false
   )
 
@@ -68,7 +75,9 @@ proc reploid*(
     output.error(fmt"Error: '{configuration.nim}' not found, make sure '{configuration.nim}' is in PATH")
     return
 
-  var vm = newNimCVm(compiler)
+  var vm = case configuration.vm:
+    of VmImplementation.nimc: newNimCVm(compiler)
+    of VmImplementation.nims: newNimSVm()
 
   var commandsApi = CommandsApi(
     output: output,
@@ -77,7 +86,7 @@ proc reploid*(
   )
   var reader = newReader(output, historyFile = configuration.history)
   var evaluator = newEvaluator(commandsApi, commands, vm)
-  var printer = newPrinter(output, vm)
+  var printer = newPrinter(output, vm, configuration.output)
   var quit = false
 
   vm.preloadImports(configuration.imports, output)

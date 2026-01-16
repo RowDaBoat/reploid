@@ -43,8 +43,6 @@ type NimCVm* = ref object of Vm
   compiler: Compiler
   states: seq[LibHandle]
 
-  tmpPath: string
-
 
 proc cased(value: string): string =
   result = value
@@ -238,8 +236,8 @@ method updateImports*(self: NimCVm): (string, int) =
   result = self.compiler.compileLibrary(checkSrcPath, checkLibPath)
 
   if not result.isSuccess:
-    self.newImports = @[]
     result[0] = result[0].strip()
+    self.newImports = @[]
     return
 
   let srcPath = self.importsBasePath & nimExt
@@ -349,6 +347,7 @@ method runCommand*(self: NimCVm, command: string): (string, int) =
 
 
 proc clean*(self: NimCVm) =
+  ## TODO: Method?
   ## Cleans up the vm, unloading all state libraries.
   for state in self.states:
     unloadLib(state)

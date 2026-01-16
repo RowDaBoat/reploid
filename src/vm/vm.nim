@@ -1,3 +1,6 @@
+import std/paths
+
+
 const nimExt* = ".nim"
 const checkSuffix* = "check"
 
@@ -13,6 +16,7 @@ type VariableDeclaration* = object
 
 
 type Vm* = ref object of RootObj
+  tmpPath*: string
   importsBasePath*: string
   declarationsBasePath*: string
   commandBasePath*: string
@@ -38,34 +42,34 @@ proc isSuccess*(toCheck: (string, int)): bool =
   toCheck[1] == 0
 
 
-proc importsPath*(self: Vm): string =
+proc importsPath*(self: Vm): Path =
   ## Temporary path where the vm stores its imports.
-  self.importsBasePath & nimExt
+  Path(self.importsBasePath & nimExt)
 
 
-proc importsCheckPath*(self: Vm): string =
+proc importsCheckPath*(self: Vm): Path =
   ## Temporary path where the vm writes the last imports that were validated.
-  self.importsBasePath & checkSuffix & nimExt
+  Path(self.importsBasePath & checkSuffix & nimExt)
 
 
-proc declarationsPath*(self: Vm): string =
+proc declarationsPath*(self: Vm): Path =
   ## Temporary path where the vm stores its declarations.
-  self.declarationsBasePath & nimExt
+  Path(self.declarationsBasePath & nimExt)
 
 
-proc declarationsCheckPath*(self: Vm): string =
+proc declarationsCheckPath*(self: Vm): Path =
   ## Temporary path where the vm writes the last declarations that were validated.
-  self.declarationsBasePath & checkSuffix & nimExt
+  Path(self.declarationsBasePath & checkSuffix & nimExt)
 
 
-proc commandPath*(self: Vm): string =
+proc commandPath*(self: Vm): Path =
   ## Temporary path where the vm stored the last command.
-  self.commandBasePath & nimExt
+  Path(self.commandBasePath & nimExt)
 
 
-proc statePath*(self: Vm): string =
+proc statePath*(self: Vm): Path =
   ## Temporary path where the vm stored the last state.
-  self.stateBasePath & nimExt
+  Path(self.stateBasePath & nimExt)
 
 
 proc declareImport*(self: Vm, declaration: string) =
