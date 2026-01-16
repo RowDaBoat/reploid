@@ -1,7 +1,7 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 
-import tables, sequtils, strutils
+import std/paths, tables, sequtils, strutils
 import evaluation, styledoutput
 import ../vm/[compiler, vm]
 
@@ -21,9 +21,9 @@ type Command* = object
   run*: CommandProc
 
 
-proc toSource(path: string): string =
-  path & ":\n" &
-  readFile(path)
+proc toSource(path: Path): string =
+  path.string & ":\n" &
+  readFile(path.string)
 
 
 proc buildHelpLine(name: string, help: string, maxWidth: int): string =

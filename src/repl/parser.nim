@@ -34,6 +34,24 @@ proc parse*(text: string): Parser =
   Parser(ok: true, text: text, tokens: @[], expected: "")
 
 
+proc matchText*(self: Parser, texts: varargs[string]): Parser =
+  if not self.ok:
+    return self
+
+  result = self
+
+  for text in texts:
+    let (matched, rest) = self.text.match(text)
+
+    if matched:
+      result.text = rest
+      result.tokens.add(text)
+      return
+
+  result.ok = false
+  result.expected = "expected: " & texts.join(", ") & ", got '" & self.text & "'"
+
+
 proc matchKeywords*(self: Parser, texts: varargs[string]): Parser =
   if not self.ok:
     return self
@@ -49,7 +67,7 @@ proc matchKeywords*(self: Parser, texts: varargs[string]): Parser =
       return
 
   result.ok = false
-  result.expected = texts.join(", ")
+  result.expected = "expected: " & texts.join(", ") & ", got '" & self.text & "'"
 
 
 proc matchSymbols*(self: Parser, texts: varargs[string]): Parser =
@@ -67,7 +85,7 @@ proc matchSymbols*(self: Parser, texts: varargs[string]): Parser =
       return
 
   result.ok = false
-  result.expected = texts.join(", ")
+  result.expected = "expected: " & texts.join(", ") & ", got '" & self.text & "'"
 
 
 proc matchInteger*(self: Parser): Parser =
@@ -76,7 +94,6 @@ proc matchInteger*(self: Parser): Parser =
 
   result = self
   result.ok = false
-  result.expected = "an integer number"
   var current = 0
 
   while self.text[current].isDigit:
@@ -85,7 +102,9 @@ proc matchInteger*(self: Parser): Parser =
 
   result.tokens.add(self.text[0 ..< current])
   result.text = self.text[current..^1]
-  result.expected = ""
+
+  if not result.ok:
+    result.expected = "expected: an integer number, got '" & self.text & "'"
 
 
 proc consumeSpaces*(self: Parser): Parser =
@@ -106,7 +125,7 @@ proc matchLabel*(self: Parser): Parser =
 
   if token.len == 0:
     result.ok = false
-    result.expected = "a label"
+    result.expected = "expected: a label, got '" & self.text & "'"
   else:
     result.tokens.add(token)
 
@@ -129,9 +148,9 @@ proc matchUpTo*(self: Parser, texts: varargs[string]): Parser =
   let token = self.text[0 ..< min]
   let rest = self.text[min..^1]
 
-  if token.len == 0:
+  if min == self.text.len:
     result.ok = false
-    result.expected = "unexpected " & matchingText
+    result.expected = "expected: " & texts.join(", ") & ", got '" & self.text & "'"
   else:
     result.text = rest
     result.tokens.add(token)

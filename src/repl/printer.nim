@@ -1,17 +1,21 @@
 # ISC License
 # Copyright (c) 2025 RowDaBoat
 
-import styledoutput
-import evaluation
-import strutils
-import parser
+import std/[paths, strutils, sequtils, tables]
+import styledoutput, evaluation, parser
 import ../vm/vm
+
+
+type OutputDisplay* = enum clean, full
 
 
 type Printer* = object
   output: Output
-  pathHintReplacements: seq[(string, string)]
+  tempPath:string
+  sourceFileNames: seq[string]
+  sourceFileReplacements: Table[string, string]
   muted: seq[string]
+  outputDisplay: OutputDisplay
 
 
 type Style = enum None = 0, Hint = 1, Warning = 2, Error = 3, Muted = 4
@@ -23,8 +27,10 @@ proc isMuted(self: Printer, line: string): bool =
       return true
 
 
-proc matchCompilerOutput(text: string): Parser =
+proc matchCompilerOutput(text: string, sources: seq[string]): Parser =
   parse(text)
+    .matchUpTo(sources)
+    .matchText(sources)
     .matchSymbols("(")
     .matchInteger()
     .matchSymbols(",")
@@ -35,22 +41,25 @@ proc matchCompilerOutput(text: string): Parser =
     .matchKeywords("Hint", "Warning", "Error")
 
 
-proc replaceVmPaths(self: Printer, line: string, path: string, replacement: string): (string, string, string, Style) =
+proc styleIfCompilerOutput(self: Printer, line: string, path: string): (string, Style) =
   let pathStartIndex = line.find(path)
 
   if pathStartIndex == -1:
-    return ("", "", line, None)
+    return (line, None)
 
-  var prev = line[0..<pathStartIndex]
+  var prev = line[0 ..< pathStartIndex]
 
   if prev.endsWith("/private"):
     prev = prev[0..<prev.len - "/private".len]
 
   let post = line[pathStartIndex + path.len..^1]
-  let matchCompilerOut = matchCompilerOutput(post)
+  let matchCompilerOut = matchCompilerOutput(post, self.sourceFileNames)
 
   if not matchCompilerOut.ok:
-    return ("", "", line, None)
+    echo "matchCompilerOut: ", matchCompilerOut.expected
+    return (line, None)
+
+  var replacement = self.sourceFileReplacements[matchCompilerOut.tokens[1]]
 
   let outType = matchCompilerOut.tokens[^1]
   let style = case outType:
@@ -59,12 +68,8 @@ proc replaceVmPaths(self: Printer, line: string, path: string, replacement: stri
     of "Error": Error
     else: None
 
-  result = (
-    prev,
-    replacement & " " & matchCompilerOut.tokens[^1],
-    matchCompilerOut.text,
-    style
-  )
+  let replacedLine = prev & replacement & " " & matchCompilerOut.tokens[^1] & matchCompilerOut.text
+  result = (replacedLine, style)
 
 
 proc processLine(self: Printer, line: string): (string, Style) =
@@ -74,16 +79,19 @@ proc processLine(self: Printer, line: string): (string, Style) =
   if self.isMuted(line):
     return ("", Muted)
 
-  for (path, replacement) in self.pathHintReplacements:
-    var (prev, replacement, post, replacementStyle) = self.replaceVmPaths(line, path, replacement)
-    style = max(style, replacementStyle)
-    line = prev & replacement & post
-
+  let path = self.tempPath
+  var replacementStyle: Style = None
+  (line, replacementStyle) = self.styleIfCompilerOutput(line, path)
+  style = max(style, replacementStyle)
   result = (line, style)
 
 
 proc printOk(self: Printer, lines: string) =
   if lines.len == 0:
+    return
+
+  if self.outputDisplay == OutputDisplay.full:
+    self.output.okResult(lines & "\n")
     return
 
   for line in lines.split("\n"):
@@ -101,6 +109,10 @@ proc printError(self: Printer, lines: string) =
   if lines.len == 0:
     return
 
+  if self.outputDisplay == OutputDisplay.full:
+    self.output.error(lines & "\n")
+    return
+
   for line in lines.split("\n"):
     var (line, style) = self.processLine(line)
 
@@ -112,23 +124,32 @@ proc printError(self: Printer, lines: string) =
     of Muted:   discard
 
 
-proc newPrinter*(output: Output, vm: Vm): Printer =
+proc file(path: Path): string =
+  path.extractFilename.string
+
+proc newPrinter*(output: Output, vm: Vm, outputDisplay: OutputDisplay): Printer =
   ## Creates a new Printer object with the given output and vm.
   ## The vm is used to filter its temporary paths from the output.
-  Printer(
+  let sourceHintReplacements = @[
+      (vm.importsPath.file, "[Imports]"),
+      (vm.importsCheckPath.file, "[Imports]"),
+      (vm.declarationsPath.file, "[Declarations]"),
+      (vm.declarationsCheckPath.file, "[Declarations]"),
+      (vm.statePath.file, "[State]"),
+      (vm.commandPath.file, "[Command]"),
+    ]
+  let sourceFileNames = sourceHintReplacements.mapIt(it[0])
+
+  return Printer(
     output: output,
+    outputDisplay: outputDisplay,
     muted: @[
       "template/generic instantiation of `showIfTyped` from here",
       "Warning: imported and not used:"
     ],
-    pathHintReplacements: @[
-      (vm.importsPath, "[Imports]"),
-      (vm.importsCheckPath, "[Imports]"),
-      (vm.declarationsPath, "[Declarations]"),
-      (vm.declarationsCheckPath, "[Declarations]"),
-      (vm.statePath, "[State]"),
-      (vm.commandPath, "[Command]"),
-    ]
+    tempPath: vm.tmpPath,
+    sourceFileNames: sourceFileNames,
+    sourceFileReplacements: sourceHintReplacements.toTable
   )
 
 
