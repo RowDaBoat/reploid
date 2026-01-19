@@ -1,0 +1,26 @@
+include imports
+include declarations
+import typetraits
+
+
+include state
+
+
+template showIfTyped(body: untyped): string =
+  type typ = typeof(body)
+
+  block:
+    when typ is void:
+      body
+      ""
+    else:
+      let value = body
+      "'" & $value & "'" & " type: " & $typeof(value)
+
+
+proc run*(): (string, string) =
+  try:
+    result[0] = showIfTyped:
+      {command}
+  except Exception as error:
+    result[1] = error.msg

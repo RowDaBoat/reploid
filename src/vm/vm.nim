@@ -121,3 +121,13 @@ method runCommand*(self: Vm, command: string): (string, int) {.base.} =
   ## Runs a command.
   ## Compiles the command, runs it, and returns a success or an error.
   quit "RunCommand not implemented on " & $self.type & ", this is a bug."
+
+
+method clean*(self: Vm) {.base.} =
+  ## Cleans up the vm state.
+  self.newImports = @[]
+  self.imports = @[]
+  self.newDeclarations = @[]
+  self.declarations = @[]
+  self.newVariables = @[]
+  self.variables = @[]

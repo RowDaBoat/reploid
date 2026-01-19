@@ -3,12 +3,11 @@
 
 import std/paths, tables, sequtils, strutils
 import evaluation, styledoutput
-import ../vm/[compiler, vm]
+import ../vm/vm
 
 
 type CommandsApi* = object
   output*: Output
-  compiler*: Compiler
   vm*: Vm
 
 

@@ -2,7 +2,8 @@
 # Copyright (c) 2025 RowDaBoat
 
 import sequtils, strutils, strformat, tables, os, dynlib
-import vm, compiler, temple
+import compiler, ../[vm, temple]
+
 
 const libExt* =
   when defined(windows): ".dll"
@@ -10,7 +11,6 @@ const libExt* =
   else: ".so"
 const templateExt = ".nim.template"
 const templatesPath = "templates"
-
 
 const stateTemplate =             staticRead(templatesPath/"state" & templateExt)
 const commandTemplate =           staticRead(templatesPath/"command" & templateExt)
@@ -22,12 +22,12 @@ const loadStateTemplate =         staticRead(templatesPath/"loadstate" & templat
 const saveStateTemplate =         staticRead(templatesPath/"savestate" & templateExt)
 
 
-type Initialize* = proc(oldStateLib: pointer) {.stdcall.}
-type Run* = proc(state: pointer): (string, string) {.stdcall.}
-
-
 var stateId: int = 0
 var commandId: int = 0
+
+
+type Initialize* = proc(oldStateLib: pointer) {.stdcall.}
+type Run* = proc(state: pointer): (string, string) {.stdcall.}
 
 
 type NimCVm* = ref object of Vm
@@ -225,8 +225,6 @@ proc newNimCVm*(compiler: Compiler, tmpPath: string = getTempDir()): NimCVm =
 
 
 method updateImports*(self: NimCVm): (string, int) =
-  ## Updates the imports.
-  ## Compiles all declared imports and returns a success or an error.
   let imports = self.imports & self.newImports
   let source = imports.join("\n")
   let checkSrcPath = self.importsBasePath & checkSuffix & nimExt
@@ -248,10 +246,9 @@ method updateImports*(self: NimCVm): (string, int) =
 
 
 method updateDeclarations*(self: NimCVm): (string, int) =
-  ## Updates the declarations.
-  ## Compiles all declarations and returns a success or an error.
   let declarations = self.declarations & self.newDeclarations
-  let source = declarations.join("\n\n")
+  let incl = "include " & self.importsBasePath & "\n\n"
+  let source = incl & declarations.join("\n\n")
   let checkSrcPath = self.declarationsBasePath & checkSuffix & nimExt
   let checkLibPath = self.declarationsBasePath & checkSuffix & libExt
 
@@ -310,8 +307,6 @@ method updateState*(self: NimCVm): (string, int) =
 
 
 method runCommand*(self: NimCVm, command: string): (string, int) =
-  ## Runs a command.
-  ## Compiles the command, runs it, and returns a success or an error.
   let srcPath = self.commandBasePath & nimExt
   let source = self.generateCommandSource(command)
   srcPath.writeFile(source)
@@ -346,16 +341,10 @@ method runCommand*(self: NimCVm, command: string): (string, int) =
   unloadLib(commandLib)
 
 
-proc clean*(self: NimCVm) =
-  ## TODO: Method?
-  ## Cleans up the vm, unloading all state libraries.
+method clean*(self: NimCVm) =
   for state in self.states:
     unloadLib(state)
 
-  self.newImports = @[]
-  self.imports = @[]
-  self.newDeclarations = @[]
-  self.declarations = @[]
-  self.newVariables = @[]
-  self.variables = @[]
   self.states = @[]
+  procCall self.Vm.clean()
+

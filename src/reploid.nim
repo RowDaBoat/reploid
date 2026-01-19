@@ -7,7 +7,9 @@ import cliquet
 import repl/[welcome, styledoutput, reader, input, evaluator, evaluation, printer, commands]
 export welcome, styledoutput, reader, input, evaluator, evaluation, printer, commands
 
-import vm/[compiler, vm, nimcvm, nimsvm]
+import vm/vm
+import vm/nimc/[compiler, nimcvm]
+import vm/nims/nimsvm
 export compiler, vm, nimcvm, nimsvm
 
 type VmImplementation* = enum nimc, nims
@@ -79,11 +81,7 @@ proc reploid*(
     of VmImplementation.nimc: newNimCVm(compiler)
     of VmImplementation.nims: newNimSVm()
 
-  var commandsApi = CommandsApi(
-    output: output,
-    compiler: compiler,
-    vm: vm
-  )
+  var commandsApi = CommandsApi(output: output, vm: vm)
   var reader = newReader(output, historyFile = configuration.history)
   var evaluator = newEvaluator(commandsApi, commands, vm)
   var printer = newPrinter(output, vm, configuration.output)
