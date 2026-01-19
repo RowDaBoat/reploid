@@ -80,32 +80,26 @@ proc processImport(self: var Evaluator, lines: string, evaluation: var Evaluatio
   return true
 
 
-proc getType(parser: var Parser): string =
+proc getTypeAndInitializer(parser: Parser): (string, string) =
   var typeParser = parser
     .consumeSpaces()
-    .matchSymbols(":")
+    .matchSymbols(":", "=")
+
+  if not typeParser.ok:
+    return ("", "")
+
+  if typeParser.tokens[^1] == "=":
+    return ("", typeParser.text.strip())
+
+  typeParser = typeParser
     .matchUpTo("=")
 
-  parser = typeParser
+  if not typeParser.ok:
+    return (typeParser.text.strip(), "")
 
-  if not parser.ok:
-    result = parser.text.strip()
-    parser.ok = result.len > 0
-    return result
-  
-  return parser.tokens[^1].strip()
-
-
-proc getInitializer(parser: var Parser): string =
-  let initialiserParser = parser
-    .consumeSpaces()
-    .matchSymbols("=")
-
-  if initialiserParser.ok:
-    parser = initialiserParser
-    return initialiserParser.text
-
-  return ""
+  let typ = typeParser.tokens[^1].strip()
+  let init = typeParser.text[1..^1].strip()
+  return (typ, init)
 
 
 proc processVariableDeclaration(self: var Evaluator, lines: string, evaluation: var Evaluation): bool =
@@ -116,8 +110,7 @@ proc processVariableDeclaration(self: var Evaluator, lines: string, evaluation: 
 
   let declarer = varDeclResult.tokens[0].toDeclarerKind()
   let label = varDeclResult.tokens[1]
-  let typ = varDeclResult.getType()
-  let initializer = varDeclResult.getInitializer()
+  let (typ, initializer) = varDeclResult.getTypeAndInitializer()
 
   if typ.len == 0 and initializer.len == 0:
     evaluation = Evaluation(kind: Error, result: "A type and/or an initializer are required to declare a variable.")
