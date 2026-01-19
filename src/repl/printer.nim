@@ -144,7 +144,7 @@ proc newPrinter*(output: Output, vm: Vm, outputDisplay: OutputDisplay): Printer 
     outputDisplay: outputDisplay,
     muted: @[
       "template/generic instantiation of `showIfTyped` from here",
-      "Warning: imported and not used:"
+      "Warning: imported and not used:", ":reploid var decl:"
     ],
     tempPath: vm.tmpPath,
     sourceFileNames: sourceFileNames,
