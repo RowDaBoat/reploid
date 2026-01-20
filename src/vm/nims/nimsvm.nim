@@ -107,6 +107,11 @@ proc newNimSVm*(tmpPath: string = getTempDir()): NimSVm =
     commandBasePath: commandBasePath
   )
 
+  writeFile(result.importsBasePath & nimExt, "")
+  writeFile(result.declarationsBasePath & nimExt, "")
+  writeFile(result.stateBasePath & nimExt, "")
+  writeFile(result.commandBasePath & nimExt, "")
+
 
 method updateImports*(self: NimSVm): (string, int) =
   let imports = self.imports & self.newImports
@@ -129,11 +134,14 @@ method updateImports*(self: NimSVm): (string, int) =
 
 method updateDeclarations*(self: NimSVm): (string, int) =
   let declarations = self.declarations & self.newDeclarations
-  let incl = "include " & self.importsBasePath & "\n\n"
-  let source = incl & declarations.join("\n\n")
+  let includes =
+    "include " & self.importsBasePath & "\n" &
+    "include " & self.stateBasePath & "\n\n"
+  let declarationsSource = declarations.join("\n\n")
+
   let checkSrcPath = self.declarationsBasePath & checkSuffix & nimExt
 
-  checkSrcPath.writeFile(source)
+  checkSrcPath.writeFile(includes & declarationsSource)
   result = exec(self.checkIntr, checkSrcPath)
 
   if not result.isSuccess:
@@ -141,8 +149,9 @@ method updateDeclarations*(self: NimSVm): (string, int) =
     result[0] = result[0].strip()
     return
 
+  let incl = "include " & self.importsBasePath & "\n\n"
   let srcPath = self.declarationsBasePath & nimExt
-  srcPath.writeFile(source)
+  srcPath.writeFile(incl & declarationsSource)
   self.declarations.add(self.newDeclarations)
   self.newDeclarations = @[]
   result[0] = ""

@@ -218,10 +218,10 @@ proc newNimCVm*(compiler: Compiler, tmpPath: string = getTempDir()): NimCVm =
     stateBasePath: tmpPath / "state",
     commandBasePath: tmpPath / "command"
   )
-  (result.importsBasePath & nimExt).writeFile("")
-  (result.declarationsBasePath & nimExt).writeFile("")
-  (result.stateBasePath & nimExt).writeFile("")
-  (result.commandBasePath & nimExt).writeFile("")
+  writeFile(result.importsBasePath & nimExt, "")
+  writeFile(result.declarationsBasePath & nimExt, "")
+  writeFile(result.stateBasePath & nimExt, "")
+  writeFile(result.commandBasePath & nimExt, "")
 
 
 method updateImports*(self: NimCVm): (string, int) =
